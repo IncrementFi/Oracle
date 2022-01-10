@@ -1,0 +1,120 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+
+	"contracts": {
+		"FungibleToken": {
+			"source": "./cadence/contracts/FungibleToken.cdc",
+			"aliases": { "emulator": "0xee82856bf20e2aa6", "testnet": "0x9a0766d93b6608b7", "mainnet": "0xf233dcee88fe0abe" }
+		  },
+		  "FlowToken" : {
+			"source": "./cadence/contracts/FlowToken.cdc",
+			"aliases": { "emulator": "0x0ae53cb6e3f42a79", "testnet": "0x7e60df042a9c0868", "mainnet": "0x1654653399040a61" }
+		  },
+		  "FUSD" : {
+			"source": "./cadence/contracts/FUSD.cdc",
+			"aliases": { "testnet": "0xe5b5624186770886", "mainnet": "0x3c5959b568896393" }
+		  },
+		  "BLT" : {
+			"source": "./cadence/contracts/BLT.cdc",
+			"aliases": { "testnet": "0x48adb192e4b081b0" }
+		  },
+
+		  "OracleInterface": "./cadence/contracts/OracleInterface.cdc",
+		  "OracleConfig": "./cadence/contracts/OracleConfig.cdc",
+		  
+		  "TokenPriceOracle": "./cadence/contracts/TokenPriceOracle.cdc"
+	},
+
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "da193159f79102065ceb0c7cfef38910525e10a6a0c8c5109f645cb47f792a47"
+		},
+		"emulator-oracle-FlowToken": { "address": "0x01cf0e2f2f715450", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-oracle-FUSD": 	 { "address": "0x179b6b1cb6755e31", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+    	"emulator-oracle-BLT":		 { "address": "0xf3fcd2c1a78f5eee", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feader1": { "address": "0xe03daebed8ca0615", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+    	"emulator-feader2": { "address": "0x045a1763c93006ca", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feader3": { "address": "0x120e725050340cab", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feader4": { "address": "0xf669cb8d41ce0c74", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feader5": { "address": "0x192440c99cb17282", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-reader1": { "address": "0xfd43f9148d4b725d", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } }
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"FUSD",
+				"BLT",
+
+				"OracleInterface",
+				"OracleConfig",
+				"TokenPriceOracle"
+			]
+		}
+	},
+	"oracles": {
+		"codeTemplate" : {
+			"emulator": "0xf8d6e0586b0a20c7"
+		},
+		"emulator": {
+			"FlowToken": {
+				"deployer": "emulator-oracle-FlowToken",
+				"tokenType": "A.0ae53cb6e3f42a79.FlowToken",
+				"feaderPath": "increment_oracle_feader_FlowToken",
+				"minFeaderNumber": 1
+			},
+			"FUSD": {
+				"deployer": "emulator-oracle-FUSD",
+				"tokenType": "A.f8d6e0586b0a20c7.FUSD",
+				"feaderPath": "increment_oracle_feader_FUSD",
+				"minFeaderNumber": 1
+			},
+			"BLT": {
+				"deployer": "emulator-oracle-BLT",
+				"tokenType": "A.f8d6e0586b0a20c7.BLT",
+				"feaderPath": "increment_oracle_feader_BLT",
+				"minFeaderNumber": 1
+			}
+		}
+	},
+	"feaders": {
+		"emulator": {
+			"FlowToken": [
+				{ "deployer": "emulator-feader1", "initPrice": "8.9" },
+				{ "deployer": "emulator-feader2", "initPrice": "8.8" }
+			],
+			"FUSD": [
+				{ "deployer": "emulator-feader1", "initPrice": "1.0" }
+			],
+			"BLT": [
+				{ "deployer": "emulator-feader1", "initPrice": "2.9" }
+			]
+		}
+	},
+	"readers": {
+		"emulator": {
+			"FlowToken": [
+				{ "deployer": "emulator-reader1" },
+				{ "deployer": "emulator-account" }
+			],
+			"FUSD": [
+				{ "deployer": "emulator-reader1" },
+				{ "deployer": "emulator-account" }
+			],
+			"BLT": [
+				{ "deployer": "emulator-reader1" },
+				{ "deployer": "emulator-account" }
+			]
+		}
+	}
+}
