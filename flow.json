@@ -27,7 +27,7 @@
 		  "OracleInterface": "./cadence/contracts/OracleInterface.cdc",
 		  "OracleConfig": "./cadence/contracts/OracleConfig.cdc",
 		  
-		  "TokenPriceOracle": "./cadence/contracts/TokenPriceOracle.cdc"
+		  "PriceOracle": "./cadence/contracts/PriceOracle.cdc"
 	},
 
 	"networks": {
@@ -58,7 +58,7 @@
 
 				"OracleInterface",
 				"OracleConfig",
-				"TokenPriceOracle"
+				"PriceOracle"
 			]
 		}
 	},

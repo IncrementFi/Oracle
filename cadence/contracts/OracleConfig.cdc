@@ -1,15 +1,15 @@
 /**
-  * @Desc This contract stores some commonly used paths for TokenPriceOracle
+  * @Desc This contract stores some commonly used paths for PriceOracle
   * 
   * @Author Increment Labs
 */
 
 pub contract OracleConfig {
-    // Admin resource stored in every TokenPriceOracle contract
+    // Admin resource stored in every PriceOracle contract
     pub let OracleAdminPath: StoragePath
-    // Reader public interface exposed in every TokenPriceOracle contract
+    // Reader public interface exposed in every PriceOracle contract
     pub let OracleReaderPublicPath: PublicPath
-    // Feader public interface exposed in every TokenPriceOracle contract
+    // Feader public interface exposed in every PriceOracle contract
     pub let OracleFeaderPublicPath: PublicPath
     // Recommended storage path of reader's certificate
     pub let ReaderCertificateStoragePath: StoragePath

@@ -27,7 +27,7 @@ for tokenName in OracleConfigs:
     print('-------------------------------------------------- deploy oracle', deployer)
     cmd = 'flow transactions send ./cadence/transactions/tool/deploy_by_template.cdc ' + \
           '--arg Address:{0} '.format(flow_json['oracles']['codeTemplate'][Network]) + \
-          '--arg String:{0} '.format("TokenPriceOracle") + \
+          '--arg String:{0} '.format("PriceOracle") + \
           '--signer {0}'.format(deployer)
     print(cmd)
     os.system(cmd)

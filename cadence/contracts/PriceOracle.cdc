@@ -1,12 +1,11 @@
 /**
-  * @Desc This contract implements the on-chain logic of the price oracle.
+  * @Desc This contract is the interface description of PriceOracle.
   *  The oracle includes an medianizer, which obtains prices from multiple feeds and calculate the median as the final price.
   * 
   * @Author Increment Labs
   *
-  *  TokenPriceOracle only makes price oracle for a single token.
   *  The contract will accept price offers from multiple feeds.
-  *  Feeders are anonymous for now, and its purpose is to protect the providers from extortion.
+  *  Feeders are anonymous for now to protect the providers from extortion.
   *  We welcome more price-feeding institutions and partners to join in and build a more decentralized oracle on flow.
   *
   *  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
@@ -20,10 +19,10 @@
 import OracleInterface from "./OracleInterface.cdc"
 import OracleConfig from "./OracleConfig.cdc"
 
-pub contract TokenPriceOracle: OracleInterface {
+pub contract PriceOracle: OracleInterface {
 
-    // The identifier of the token type, eg: A.7e60df042a9c0868.FlowToken
-    pub var _TokenTypeIdentifier: String?
+    // The identifier of the token type, eg: BTC/USD
+    pub var _PriceIdentifier: String?
 
     // Storage path of local oracle certificate
     pub let _CertificateStoragePath: StoragePath
@@ -55,27 +54,27 @@ pub contract TokenPriceOracle: OracleInterface {
     pub resource FeaderPricePanel: OracleInterface.FeaderPricePanelPublic {
         
         access(self) var _Price: UFix64
-        access(self) let _TokenTypeIdentifier: String
+        access(self) let _PriceIdentifier: String
 
         // @Desc The feeder uses this function to offer price at the price panel
         // @Param price - price from off-chain
         pub fun publishPrice(price: UFix64) {
             self._Price = price
 
-            emit PublishOraclePrice(price: price, tokenType: TokenPriceOracle._TokenTypeIdentifier!, feaderAddr: self.owner!.address)
+            emit PublishOraclePrice(price: price, tokenType: PriceOracle._PriceIdentifier!, feaderAddr: self.owner!.address)
         }
 
-        // @Desc Get the current feed price, this function can only be called by the TokenPriceOracle contract
+        // @Desc Get the current feed price, this function can only be called by the PriceOracle contract
         pub fun fetchPrice(certificate: &OracleInterface.OracleCertificate): UFix64 {
             pre {
-                certificate.getType() == Type<@OracleCertificate>(): "TokenPriceOracle certificate does not match."
+                certificate.getType() == Type<@OracleCertificate>(): "PriceOracle certificate does not match."
             }
             return self._Price
         }
 
         init() {
             self._Price = 0.0
-            self._TokenTypeIdentifier = TokenPriceOracle._TokenTypeIdentifier!
+            self._PriceIdentifier = PriceOracle._PriceIdentifier!
         }
     }
 
@@ -88,10 +87,10 @@ pub contract TokenPriceOracle: OracleInterface {
         pub fun getMedianPrice(readerCertificate: &OracleInterface.ReaderCertificate): UFix64 {
             pre {
                 readerCertificate.owner != nil: "Certificate resource must be stored in local storage."
-                TokenPriceOracle._ReaderWhiteList.containsKey(readerCertificate.owner!.address): "Reader is not on the whitelist."
+                PriceOracle._ReaderWhiteList.containsKey(readerCertificate.owner!.address): "Reader is not on the whitelist."
             }
 
-            let priceMedian = TokenPriceOracle.takeMedianPrice()
+            let priceMedian = PriceOracle.takeMedianPrice()
 
             return priceMedian
         }
@@ -113,8 +112,8 @@ pub contract TokenPriceOracle: OracleInterface {
 
         // @Desc The oracle contract will get the feeding-price based on this path
         // Feeders need to expose their price panel capabilities at this public path
-        pub fun getPricePanelStoragePath(): StoragePath { return TokenPriceOracle._FeaderPricePanelStoragePath! }
-        pub fun getPricePanelPublicPath(): PublicPath { return TokenPriceOracle._FeaderPricePanelPublicPath! }
+        pub fun getPricePanelStoragePath(): StoragePath { return PriceOracle._FeaderPricePanelStoragePath! }
+        pub fun getPricePanelPublicPath(): PublicPath { return PriceOracle._FeaderPricePanelPublicPath! }
     }
 
     // @Desc Each oracle contract will hold its own certificate to identify itself.
@@ -132,13 +131,13 @@ pub contract TokenPriceOracle: OracleInterface {
     access(contract) fun takeMedianPrice(): UFix64 {
         let oraclePrices: [UFix64] = []
         let certificateRef = self.account.borrow<&OracleCertificate>(from: self._CertificateStoragePath)
-                             ?? panic("Lost TokenPriceOracle certificate resource.")
+                             ?? panic("Lost PriceOracle certificate resource.")
 
         var priceList: [UFix64] = []
         var sortList: [UFix64] = []
 
         for oracleAddr in self._FeaderWhiteList.keys {
-            let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(TokenPriceOracle._FeaderPricePanelPublicPath!)
+            let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(PriceOracle._FeaderPricePanelPublicPath!)
             // Get valid feeding-price
             if (pricePanelCap.check()) {
                 let price = pricePanelCap.borrow()!.fetchPrice(certificate: certificateRef)
@@ -191,11 +190,11 @@ pub contract TokenPriceOracle: OracleInterface {
 
     access(contract) fun getFeaderWhiteListPrice(): [UFix64] {
             let certificateRef = self.account.borrow<&OracleCertificate>(from: self._CertificateStoragePath)
-                             ?? panic("Lost TokenPriceOracle certificate resource.")
+                             ?? panic("Lost PriceOracle certificate resource.")
             var priceList: [UFix64] = []
             
-            for oracleAddr in TokenPriceOracle._FeaderWhiteList.keys {
-                let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(TokenPriceOracle._FeaderPricePanelPublicPath!)
+            for oracleAddr in PriceOracle._FeaderWhiteList.keys {
+                let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(PriceOracle._FeaderPricePanelPublicPath!)
                 if (pricePanelCap.check()) {
                     let price = pricePanelCap.borrow()!.fetchPrice(certificate: certificateRef)
                     if(price > 0.0) {
@@ -213,19 +212,19 @@ pub contract TokenPriceOracle: OracleInterface {
     
 
     access(contract) fun configOracle(
-        tokenTypeIdentifier: String,
+        priceIdentifier: String,
         minFeaderNumber: Int,
         feaderStoragePath: StoragePath,
         feaderPublicPath: PublicPath
     ) {
         emit ConfigOracle(
-            oldType: self._TokenTypeIdentifier,
-            newType: tokenTypeIdentifier,
+            oldType: self._PriceIdentifier,
+            newType: priceIdentifier,
             oldMinFeaderNumber: self._MinFeaderNumber,
             newMinFeaderNumber: minFeaderNumber
         )
 
-        self._TokenTypeIdentifier = tokenTypeIdentifier
+        self._PriceIdentifier = priceIdentifier
         self._MinFeaderNumber = minFeaderNumber
         self._FeaderPricePanelStoragePath = feaderStoragePath
         self._FeaderPricePanelPublicPath = feaderPublicPath
@@ -236,13 +235,13 @@ pub contract TokenPriceOracle: OracleInterface {
     pub resource Admin: OracleInterface.Admin {
         // 
         pub fun configOracle(
-            tokenTypeIdentifier: String,
+            priceIdentifier: String,
             minFeaderNumber: Int,
             feaderStoragePath: StoragePath,
             feaderPublicPath: PublicPath
         ) {
-            TokenPriceOracle.configOracle(
-                tokenTypeIdentifier: tokenTypeIdentifier,
+            PriceOracle.configOracle(
+                priceIdentifier: priceIdentifier,
                 minFeaderNumber: minFeaderNumber,
                 feaderStoragePath: feaderStoragePath,
                 feaderPublicPath: feaderPublicPath
@@ -251,45 +250,45 @@ pub contract TokenPriceOracle: OracleInterface {
 
         pub fun addFeaderWhiteList(feaderAddr: Address) {
             // Check if feader prepared price panel first
-            let FeaderPricePanelCap = getAccount(feaderAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(TokenPriceOracle._FeaderPricePanelPublicPath!)
+            let FeaderPricePanelCap = getAccount(feaderAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(PriceOracle._FeaderPricePanelPublicPath!)
             assert(FeaderPricePanelCap.check(), message: "Need to prepare data feader resource capability first.")
 
-            TokenPriceOracle._FeaderWhiteList[feaderAddr] = true
+            PriceOracle._FeaderWhiteList[feaderAddr] = true
 
             emit AddFeaderWhiteList(addr: feaderAddr)
         }
 
         pub fun addReaderWhiteList(readerAddr: Address) {
             
-            TokenPriceOracle._ReaderWhiteList[readerAddr] = true
+            PriceOracle._ReaderWhiteList[readerAddr] = true
 
             emit AddReaderWhiteList(addr: readerAddr)
         }
 
         pub fun delFeaderWhiteList(feaderAddr: Address) {
 
-            TokenPriceOracle._FeaderWhiteList.remove(key: feaderAddr)
+            PriceOracle._FeaderWhiteList.remove(key: feaderAddr)
 
             emit DelFeaderWhiteList(addr: feaderAddr)
         }
 
         pub fun delReaderWhiteList(readerAddr: Address) {
 
-            TokenPriceOracle._ReaderWhiteList.remove(key: readerAddr)
+            PriceOracle._ReaderWhiteList.remove(key: readerAddr)
 
             emit DelReaderWhiteList(addr: readerAddr)
         }
 
         pub fun getFeaderWhiteList(): [Address] {
-            return TokenPriceOracle._FeaderWhiteList.keys
+            return PriceOracle._FeaderWhiteList.keys
         }
 
         pub fun getReaderWhiteList(): [Address] {
-            return TokenPriceOracle._ReaderWhiteList.keys
+            return PriceOracle._ReaderWhiteList.keys
         }
 
         pub fun getFeaderWhiteListPrice(): [UFix64] {
-            return TokenPriceOracle.getFeaderWhiteListPrice()
+            return PriceOracle.getFeaderWhiteListPrice()
         }
     }
 
@@ -298,7 +297,7 @@ pub contract TokenPriceOracle: OracleInterface {
         self._FeaderWhiteList = {}
         self._ReaderWhiteList = {}
         self._MinFeaderNumber = 1
-        self._TokenTypeIdentifier = nil
+        self._PriceIdentifier = nil
 
         self._CertificateStoragePath = /storage/oracle_certificate
         self._OraclePublicStoragePath = /storage/oralce_public

@@ -1,0 +1,21 @@
+{
+    "FLOW/USD": {
+        "method": "weighted-average",
+        "origins": [
+            [{ "origin": "binance", "pair": "FLOW/USDT" },{ "origin": ".", "pair": "USDT/USD" }],
+            [{ "origin": "okex", "pair": "FLOW/USD" }],
+            [{ "origin": "huobi", "pair": "FLOW/USD" }],
+            [{ "origin": "kraken", "pair": "FLOW/USD" }],
+            [{ "origin": "coinlist", "pair": "FLOW/USD" }]
+        ],
+        "params": {
+            "weights": {
+                "binance": 0.45,
+                "okex": 0.25,
+                "huobi": 0.2,
+                "kraken": 0.08,
+                "coinlist": 0.02
+            }
+        }
+    }
+  }

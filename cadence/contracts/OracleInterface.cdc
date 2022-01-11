@@ -1,12 +1,11 @@
 /**
-  * @Desc This contract is the interface description of TokenPriceOracle.
+  * @Desc This contract is the interface description of PriceOracle.
   *  The oracle includes an medianizer, which obtains prices from multiple feeds and calculate the median as the final price.
   * 
   * @Author Increment Labs
   *
-  *  TokenPriceOracle only makes price oracle for a single token.
   *  The contract will accept price offers from multiple feeds.
-  *  Feeders are anonymous for now, and its purpose is to protect the providers from extortion.
+  *  Feeders are anonymous for now to protect the providers from extortion.
   *  We welcome more price-feeding institutions and partners to join in and build a more decentralized oracle on flow.
   *
   *  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
@@ -19,7 +18,7 @@
 
 pub contract interface OracleInterface {
 
-    // @Desc Reader related public interfaces opened on TokenPriceOracle smart contract
+    // @Desc Reader related public interfaces opened on PriceOracle smart contract
     pub resource interface OracleReaderPublic {
 
         // @Desc Get the median price of all current feeds.
@@ -33,7 +32,7 @@ pub contract interface OracleInterface {
         pub fun applyReaderCertificate(): @ReaderCertificate
     }
 
-    // @Desc Feader related public interfaces opened on TokenPriceOracle smart contract
+    // @Desc Feader related public interfaces opened on PriceOracle smart contract
     pub resource interface OracleFeaderPublic {
 
         // @Desc Feaders need to mint their own price panels and expose the exact public path to oralce contract
@@ -56,7 +55,7 @@ pub contract interface OracleInterface {
     }
 
     pub resource interface FeaderPricePanelPublic {
-        // @Desc Get the current feed price, this function can only be called by the TokenPriceOracle contract
+        // @Desc Get the current feed price, this function can only be called by the PriceOracle contract
         pub fun fetchPrice(certificate: &OracleCertificate): UFix64
     }
 
@@ -77,7 +76,7 @@ pub contract interface OracleInterface {
 
     // @Desc Community administrator, Increment Labs will then collect community feedback and initiate voting for governance.
     pub resource interface Admin {
-        pub fun configOracle(tokenTypeIdentifier: String, minFeaderNumber: Int, feaderStoragePath: StoragePath, feaderPublicPath: PublicPath)
+        pub fun configOracle(priceIdentifier: String, minFeaderNumber: Int, feaderStoragePath: StoragePath, feaderPublicPath: PublicPath)
         pub fun addFeaderWhiteList(feaderAddr: Address)
         pub fun addReaderWhiteList(readerAddr: Address)
         pub fun delFeaderWhiteList(feaderAddr: Address)
