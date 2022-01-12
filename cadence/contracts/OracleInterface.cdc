@@ -11,9 +11,15 @@
   *  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
   *
   * @Concepts
-  *  Feed1(off-chain) --> PricePanel(resource) ---- 3.4 ---->
+  *  Feed1(off-chain) --> PricePanel(resource) ---- 3.4 
   *  Feed2(off-chain) --> PricePanel(resource) ---- 3.2 ----> PriceOracle(contract) ->  Medianizer -> 3.4 -----> Readers
-  *  Feed3(off-chain) --> PricePanel(resource) ---- 3.6 ---->
+  *  Feed3(off-chain) --> PricePanel(resource) ---- 3.6 
+  *
+  * @Robustness
+  * 1. Median value is the current referee decision strategy.
+  * 2. _MinFeaderNumber determines the minimum number of feeds required to provide a valid price
+  * 3. The feeder needs to set the price expiration time. If the expiration block height is exceeded, the price will be invalid.
+  * 4. The oracle will set the price to 0.0 When a valid price cannot be provided. Contract side needs to be able to detect and deal with this abnormal price, such as terminating the transactions.
 */
 
 pub contract interface OracleInterface {

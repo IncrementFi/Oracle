@@ -11,9 +11,15 @@
   *  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
   *
   * @Concepts
-  *  Feed1(off-chain) --> PricePanel(resource) ---- 3.4 ---->
+  *  Feed1(off-chain) --> PricePanel(resource) ---- 3.4 
   *  Feed2(off-chain) --> PricePanel(resource) ---- 3.2 ----> PriceOracle(contract) ->  Medianizer -> 3.4 -----> Readers
-  *  Feed3(off-chain) --> PricePanel(resource) ---- 3.6 ---->
+  *  Feed3(off-chain) --> PricePanel(resource) ---- 3.6 
+  *
+  * @Robustness
+  * 1. Median value is the current referee decision strategy.
+  * 2. _MinFeaderNumber determines the minimum number of feeds required to provide a valid price
+  * 3. The feeder needs to set the price expiration time. If the expiration block height is exceeded, the price will be invalid.
+  * 4. The oracle will set the price to 0.0 When a valid price cannot be provided. Contract side needs to be able to detect and deal with this abnormal price, such as terminating the transactions.
 */
 
 import OracleInterface from "./OracleInterface.cdc"
@@ -55,13 +61,22 @@ pub contract PriceOracle: OracleInterface {
         
         access(self) var _Price: UFix64
         access(self) let _PriceIdentifier: String
+        access(self) var _LastPublishBlockHeight: UInt64
+        access(self) var _ExpriedDuration: UInt64
 
         // @Desc The feeder uses this function to offer price at the price panel
         // @Param price - price from off-chain
         pub fun publishPrice(price: UFix64) {
             self._Price = price
-
+            
+            self._LastPublishBlockHeight = getCurrentBlock().height
             emit PublishOraclePrice(price: price, tokenType: PriceOracle._PriceIdentifier!, feaderAddr: self.owner!.address)
+        }
+
+        // @Desc Set valid duration of price. If there is no update within the duration, the price will expire.
+        // @Param blockheightDuration
+        pub fun setExpriedDuration(blockheightDuration: UInt64) {
+            self._ExpriedDuration = blockheightDuration
         }
 
         // @Desc Get the current feed price, this function can only be called by the PriceOracle contract
@@ -69,12 +84,17 @@ pub contract PriceOracle: OracleInterface {
             pre {
                 certificate.getType() == Type<@OracleCertificate>(): "PriceOracle certificate does not match."
             }
+            if (getCurrentBlock().height - self._LastPublishBlockHeight > self._ExpriedDuration) {
+                return 0.0
+            }
             return self._Price
         }
 
         init() {
             self._Price = 0.0
             self._PriceIdentifier = PriceOracle._PriceIdentifier!
+            self._LastPublishBlockHeight = 0
+            self._ExpriedDuration = 60 * 60
         }
     }
 
