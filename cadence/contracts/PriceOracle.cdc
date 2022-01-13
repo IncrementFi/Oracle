@@ -4,20 +4,22 @@
   * 
   * @Author Increment Labs
   *
-  *  The contract will accept price offers from multiple feeds.
+  *  This contract will accept price offers from multiple feeders.
   *  Feeders are anonymous for now to protect the providers from extortion.
   *  We welcome more price-feeding institutions and partners to join in and build a more decentralized oracle on flow.
   *
   *  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
   *
-  * @Concepts
-  *  Feed1(off-chain) --> PricePanel(resource) ---- 3.4 
-  *  Feed2(off-chain) --> PricePanel(resource) ---- 3.2 ----> PriceOracle(contract) ->  Medianizer -> 3.4 -----> Readers
-  *  Feed3(off-chain) --> PricePanel(resource) ---- 3.6 
+  * @Structure 
+  *  Feeder1(off-chain) --> PriceFeeder(resource) 3.4$                                               PriceReader1(resource)
+  *  Feeder2(off-chain) --> PriceFeeder(resource) 3.2$ --> PriceOracle(contract) cal median 3.4$ --> PriceReader2(resource)
+  *  Feeder3(off-chain) --> PriceFeeder(resource) 3.6$                                               PriceReader3(resource)
+  *
+  * To apply for the whitelists of Feeders and Readers, pleas follow: https://increment.gitbook.io/public-documentation-1/protocols/decentralized-money-market/oracle
   *
   * @Robustness
   * 1. Median value is the current referee decision strategy.
-  * 2. _MinFeaderNumber determines the minimum number of feeds required to provide a valid price
+  * 2. _MinFeederNumber determines the minimum number of feeds required to provide a valid price
   * 3. The feeder needs to set the price expiration time. If the expiration block height is exceeded, the price will be invalid.
   * 4. The oracle will set the price to 0.0 When a valid price cannot be provided. Contract side needs to be able to detect and deal with this abnormal price, such as terminating the transactions.
 */
@@ -36,33 +38,60 @@ pub contract PriceOracle: OracleInterface {
     pub let _OraclePublicStoragePath: StoragePath
 
     // The contract will fetch the price according to this path on the feed node
-    pub var _FeaderPricePanelPublicPath: PublicPath?
-    pub var _FeaderPricePanelStoragePath: StoragePath?
+    pub var _PriceFeederPublicPath: PublicPath?
+    pub var _PriceFeederStoragePath: StoragePath?
+    // Recommended path for PriceReader, users can manage resources by themselves
+    pub var _PriceReaderStoragePath: StoragePath?
 
     // Address white list of feeders and readers
-    access(self) let _FeaderWhiteList: {Address: Bool}
+    access(self) let _FeederWhiteList: {Address: Bool}
     access(self) let _ReaderWhiteList: {Address: Bool}
 
     // The minimum number of feeders to provide a valid price.
-    pub var _MinFeaderNumber: Int
+    pub var _MinFeederNumber: Int
 
     // events
-    pub event PublishOraclePrice(price: UFix64, tokenType: String, feaderAddr: Address)
-    pub event ReaderCertificateApplication()
-    pub event ConfigOracle(oldType: String?, newType: String?, oldMinFeaderNumber: Int, newMinFeaderNumber: Int)
-    pub event AddFeaderWhiteList(addr: Address)
-    pub event DelFeaderWhiteList(addr: Address)
+    pub event PublishOraclePrice(price: UFix64, tokenType: String, feederAddr: Address)
+    pub event MintPriceReader()
+    pub event MintPriceFeeder()
+    pub event ConfigOracle(oldType: String?, newType: String?, oldMinFeederNumber: Int, newMinFeederNumber: Int)
+    pub event AddFeederWhiteList(addr: Address)
+    pub event DelFeederWhiteList(addr: Address)
     pub event AddReaderWhiteList(addr: Address)
     pub event DelReaderWhiteList(addr: Address)
 
 
+    // @Desc Oracle price reader, users need to save this resource in their local storage
+    // Only readers in the addr whitelist have permission to read prices
+    // Please do not share your PriceReader capability with others and take the responsibility of community governance.
+    pub resource PriceReader {
+        pub let _PriceIdentifier: String
+
+        // @Desc Get the median price of all current feeds.
+        // @Return Median price, returns 0.0 if the current price is invalid
+        pub fun getMedianPrice(): UFix64 {
+            pre {
+                self.owner != nil: "PriceReader resource must be stored in local storage."
+                PriceOracle._ReaderWhiteList.containsKey(self.owner!.address): "Reader addr is not on the whitelist."
+            }
+
+            let priceMedian = PriceOracle.takeMedianPrice()
+
+            return priceMedian
+        }
+
+        init() {
+            self._PriceIdentifier = PriceOracle._PriceIdentifier!
+        }
+    }
+
     // @Desc Panel for publishing price. Every feeder needs to mint this resource locally.
-    pub resource FeaderPricePanel: OracleInterface.FeaderPricePanelPublic {
-        
+    pub resource PriceFeeder: OracleInterface.PriceFeederPublic {
         access(self) var _Price: UFix64
-        access(self) let _PriceIdentifier: String
         access(self) var _LastPublishBlockHeight: UInt64
         access(self) var _ExpriedDuration: UInt64
+
+        pub let _PriceIdentifier: String
 
         // @Desc The feeder uses this function to offer price at the price panel
         // @Param price - price from off-chain
@@ -70,11 +99,11 @@ pub contract PriceOracle: OracleInterface {
             self._Price = price
             
             self._LastPublishBlockHeight = getCurrentBlock().height
-            emit PublishOraclePrice(price: price, tokenType: PriceOracle._PriceIdentifier!, feaderAddr: self.owner!.address)
+            emit PublishOraclePrice(price: price, tokenType: PriceOracle._PriceIdentifier!, feederAddr: self.owner!.address)
         }
 
         // @Desc Set valid duration of price. If there is no update within the duration, the price will expire.
-        // @Param blockheightDuration
+        // @Param blockheightDuration by the block numbers
         pub fun setExpriedDuration(blockheightDuration: UInt64) {
             self._ExpriedDuration = blockheightDuration
         }
@@ -94,46 +123,34 @@ pub contract PriceOracle: OracleInterface {
             self._Price = 0.0
             self._PriceIdentifier = PriceOracle._PriceIdentifier!
             self._LastPublishBlockHeight = 0
-            self._ExpriedDuration = 60 * 60
+            self._ExpriedDuration = 60 * 40
         }
     }
 
-    // @Desc All external interfaces of this contract
-    pub resource OraclePublic: OracleInterface.OracleReaderPublic, OracleInterface.OracleFeaderPublic {
-        
-        // @Desc Get the median price of all current feeds.
-        // @Param ReaderCertificate - The caller needs to provide a reader certificate
-        // @Return Median price, returns 0.0 if the current price is invalid
-        pub fun getMedianPrice(readerCertificate: &OracleInterface.ReaderCertificate): UFix64 {
-            pre {
-                readerCertificate.owner != nil: "Certificate resource must be stored in local storage."
-                PriceOracle._ReaderWhiteList.containsKey(readerCertificate.owner!.address): "Reader is not on the whitelist."
-            }
+    // All external interfaces of this contract
+    pub resource OraclePublic: OracleInterface.OraclePublicInterface_Reader, OracleInterface.OraclePublicInterface_Feeder {
+        // @Desc Users who need to read the oracle price should mint this resource and save locally.
+        pub fun mintPriceReader(): @PriceReader {
+            emit MintPriceReader()
 
-            let priceMedian = PriceOracle.takeMedianPrice()
-
-            return priceMedian
+            return <- create PriceReader()
         }
 
-        // @Desc Apply for a certificate of reader
-        // @Return Resource of certificate - This resource must be stored in local storage
-        //  and kept for yourself. Please do not expose the capability to others.
-        pub fun applyReaderCertificate(): @OracleInterface.ReaderCertificate {
-            emit ReaderCertificateApplication()
-
-            return <- create ReaderCertificate()
-        }
-
-        // @Desc Feaders need to mint their own price panels and expose the exact public path to oralce contract
+        // @Desc Feeders need to mint their own price panels and expose the exact public path to oralce contract
         // @Return Resource of price panel
-        pub fun mintFeaderPricePanel(): @FeaderPricePanel {
-            return <- create FeaderPricePanel()
+        pub fun mintPriceFeeder(): @PriceFeeder {
+            emit MintPriceFeeder()
+
+            return <- create PriceFeeder()
         }
+
+        // @Desc Recommended path for PriceReader, users can manage resources by themselves
+        pub fun getPriceReaderStoragePath(): StoragePath { return PriceOracle._PriceReaderStoragePath! }
 
         // @Desc The oracle contract will get the feeding-price based on this path
         // Feeders need to expose their price panel capabilities at this public path
-        pub fun getPricePanelStoragePath(): StoragePath { return PriceOracle._FeaderPricePanelStoragePath! }
-        pub fun getPricePanelPublicPath(): PublicPath { return PriceOracle._FeaderPricePanelPublicPath! }
+        pub fun getPriceFeederStoragePath(): StoragePath { return PriceOracle._PriceFeederStoragePath! }
+        pub fun getPriceFeederPublicPath(): PublicPath { return PriceOracle._PriceFeederPublicPath! }
     }
 
     // @Desc Each oracle contract will hold its own certificate to identify itself.
@@ -156,8 +173,8 @@ pub contract PriceOracle: OracleInterface {
         var priceList: [UFix64] = []
         var sortList: [UFix64] = []
 
-        for oracleAddr in self._FeaderWhiteList.keys {
-            let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(PriceOracle._FeaderPricePanelPublicPath!)
+        for oracleAddr in self._FeederWhiteList.keys {
+            let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
             // Get valid feeding-price
             if (pricePanelCap.check()) {
                 let price = pricePanelCap.borrow()!.fetchPrice(certificate: certificateRef)
@@ -170,7 +187,7 @@ pub contract PriceOracle: OracleInterface {
 
         let len = priceList.length
         // If the number of valid prices is insufficient
-        if (len < self._MinFeaderNumber) {
+        if (len < self._MinFeederNumber) {
             return 0.0
         }
         // sort
@@ -208,13 +225,13 @@ pub contract PriceOracle: OracleInterface {
          
     }
 
-    access(contract) fun getFeaderWhiteListPrice(): [UFix64] {
+    access(contract) fun getFeederWhiteListPrice(): [UFix64] {
             let certificateRef = self.account.borrow<&OracleCertificate>(from: self._CertificateStoragePath)
                              ?? panic("Lost PriceOracle certificate resource.")
             var priceList: [UFix64] = []
             
-            for oracleAddr in PriceOracle._FeaderWhiteList.keys {
-                let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(PriceOracle._FeaderPricePanelPublicPath!)
+            for oracleAddr in PriceOracle._FeederWhiteList.keys {
+                let pricePanelCap = getAccount(oracleAddr).getCapability<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
                 if (pricePanelCap.check()) {
                     let price = pricePanelCap.borrow()!.fetchPrice(certificate: certificateRef)
                     if(price > 0.0) {
@@ -233,21 +250,23 @@ pub contract PriceOracle: OracleInterface {
 
     access(contract) fun configOracle(
         priceIdentifier: String,
-        minFeaderNumber: Int,
-        feaderStoragePath: StoragePath,
-        feaderPublicPath: PublicPath
+        minFeederNumber: Int,
+        feederStoragePath: StoragePath,
+        feederPublicPath: PublicPath,
+        readerStoragePath: StoragePath
     ) {
         emit ConfigOracle(
             oldType: self._PriceIdentifier,
             newType: priceIdentifier,
-            oldMinFeaderNumber: self._MinFeaderNumber,
-            newMinFeaderNumber: minFeaderNumber
+            oldMinFeederNumber: self._MinFeederNumber,
+            newMinFeederNumber: minFeederNumber
         )
 
         self._PriceIdentifier = priceIdentifier
-        self._MinFeaderNumber = minFeaderNumber
-        self._FeaderPricePanelStoragePath = feaderStoragePath
-        self._FeaderPricePanelPublicPath = feaderPublicPath
+        self._MinFeederNumber = minFeederNumber
+        self._PriceFeederStoragePath = feederStoragePath
+        self._PriceFeederPublicPath = feederPublicPath
+        self._PriceReaderStoragePath = readerStoragePath
     }
 
 
@@ -256,26 +275,28 @@ pub contract PriceOracle: OracleInterface {
         // 
         pub fun configOracle(
             priceIdentifier: String,
-            minFeaderNumber: Int,
-            feaderStoragePath: StoragePath,
-            feaderPublicPath: PublicPath
+            minFeederNumber: Int,
+            feederStoragePath: StoragePath,
+            feederPublicPath: PublicPath,
+            readerStoragePath: StoragePath
         ) {
             PriceOracle.configOracle(
                 priceIdentifier: priceIdentifier,
-                minFeaderNumber: minFeaderNumber,
-                feaderStoragePath: feaderStoragePath,
-                feaderPublicPath: feaderPublicPath
+                minFeederNumber: minFeederNumber,
+                feederStoragePath: feederStoragePath,
+                feederPublicPath: feederPublicPath,
+                readerStoragePath: readerStoragePath
             )
         }
 
-        pub fun addFeaderWhiteList(feaderAddr: Address) {
-            // Check if feader prepared price panel first
-            let FeaderPricePanelCap = getAccount(feaderAddr).getCapability<&{OracleInterface.FeaderPricePanelPublic}>(PriceOracle._FeaderPricePanelPublicPath!)
-            assert(FeaderPricePanelCap.check(), message: "Need to prepare data feader resource capability first.")
+        pub fun addFeederWhiteList(feederAddr: Address) {
+            // Check if feeder prepared price panel first
+            let PriceFeederCap = getAccount(feederAddr).getCapability<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
+            assert(PriceFeederCap.check(), message: "Need to prepare data feeder resource capability first.")
 
-            PriceOracle._FeaderWhiteList[feaderAddr] = true
+            PriceOracle._FeederWhiteList[feederAddr] = true
 
-            emit AddFeaderWhiteList(addr: feaderAddr)
+            emit AddFeederWhiteList(addr: feederAddr)
         }
 
         pub fun addReaderWhiteList(readerAddr: Address) {
@@ -285,11 +306,11 @@ pub contract PriceOracle: OracleInterface {
             emit AddReaderWhiteList(addr: readerAddr)
         }
 
-        pub fun delFeaderWhiteList(feaderAddr: Address) {
+        pub fun delFeederWhiteList(feederAddr: Address) {
 
-            PriceOracle._FeaderWhiteList.remove(key: feaderAddr)
+            PriceOracle._FeederWhiteList.remove(key: feederAddr)
 
-            emit DelFeaderWhiteList(addr: feaderAddr)
+            emit DelFeederWhiteList(addr: feederAddr)
         }
 
         pub fun delReaderWhiteList(readerAddr: Address) {
@@ -299,32 +320,33 @@ pub contract PriceOracle: OracleInterface {
             emit DelReaderWhiteList(addr: readerAddr)
         }
 
-        pub fun getFeaderWhiteList(): [Address] {
-            return PriceOracle._FeaderWhiteList.keys
+        pub fun getFeederWhiteList(): [Address] {
+            return PriceOracle._FeederWhiteList.keys
         }
 
         pub fun getReaderWhiteList(): [Address] {
             return PriceOracle._ReaderWhiteList.keys
         }
 
-        pub fun getFeaderWhiteListPrice(): [UFix64] {
-            return PriceOracle.getFeaderWhiteListPrice()
+        pub fun getFeederWhiteListPrice(): [UFix64] {
+            return PriceOracle.getFeederWhiteListPrice()
         }
     }
 
 
     init() {
-        self._FeaderWhiteList = {}
+        self._FeederWhiteList = {}
         self._ReaderWhiteList = {}
-        self._MinFeaderNumber = 1
+        self._MinFeederNumber = 1
         self._PriceIdentifier = nil
 
         self._CertificateStoragePath = /storage/oracle_certificate
         self._OraclePublicStoragePath = /storage/oralce_public
         
-        self._FeaderPricePanelStoragePath = nil
-        self._FeaderPricePanelPublicPath = nil
-        
+        self._PriceFeederStoragePath = nil
+        self._PriceFeederPublicPath = nil
+
+        self._PriceReaderStoragePath = nil
 
         
         // Local admin resource
@@ -333,7 +355,7 @@ pub contract PriceOracle: OracleInterface {
         self.account.save(<-create OracleCertificate(), to: self._CertificateStoragePath)
         // Public interface
         self.account.save(<-create OraclePublic(), to: self._OraclePublicStoragePath)
-        self.account.link<&{OracleInterface.OracleReaderPublic}>(OracleConfig.OracleReaderPublicPath, target: self._OraclePublicStoragePath)
-        self.account.link<&{OracleInterface.OracleFeaderPublic}>(OracleConfig.OracleFeaderPublicPath, target: self._OraclePublicStoragePath)
+        self.account.link<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath, target: self._OraclePublicStoragePath)
+        self.account.link<&{OracleInterface.OraclePublicInterface_Feeder}>(OracleConfig.OraclePublicInterface_FeederPath, target: self._OraclePublicStoragePath)
     }
 }

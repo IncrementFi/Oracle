@@ -4,9 +4,10 @@ import OracleConfig from "../../contracts/OracleConfig.cdc"
 
 transaction(
     priceIdentifier: String,
-    minFeaderNumber: Int,
-    feaderStoragePath: StoragePath,
-    feaderPublicPath: PublicPath
+    minFeederNumber: Int,
+    feederStoragePath: StoragePath,
+    feederPublicPath: PublicPath,
+    readerStoragePath: StoragePath
 ) {
     prepare(oracleAccount: AuthAccount) {
         log("Transaction Start --------------- init oracle ".concat(priceIdentifier))
@@ -15,9 +16,10 @@ transaction(
 
         oracleAdminRef.configOracle(
             priceIdentifier: priceIdentifier,
-            minFeaderNumber: minFeaderNumber,
-            feaderStoragePath: feaderStoragePath,
-            feaderPublicPath: feaderPublicPath
+            minFeederNumber: minFeederNumber,
+            feederStoragePath: feederStoragePath,
+            feederPublicPath: feederPublicPath,
+            readerStoragePath: readerStoragePath
         )
 
         log("End -----------------------------")

@@ -43,11 +43,11 @@
 		"emulator-oracle-FlowToken": { "address": "0x01cf0e2f2f715450", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
 		"emulator-oracle-FUSD": 	 { "address": "0x179b6b1cb6755e31", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
     	"emulator-oracle-BLT":		 { "address": "0xf3fcd2c1a78f5eee", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
-		"emulator-feader1": { "address": "0xe03daebed8ca0615", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
-    	"emulator-feader2": { "address": "0x045a1763c93006ca", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
-		"emulator-feader3": { "address": "0x120e725050340cab", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
-		"emulator-feader4": { "address": "0xf669cb8d41ce0c74", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
-		"emulator-feader5": { "address": "0x192440c99cb17282", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feeder1": { "address": "0xe03daebed8ca0615", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+    	"emulator-feeder2": { "address": "0x045a1763c93006ca", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feeder3": { "address": "0x120e725050340cab", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feeder4": { "address": "0xf669cb8d41ce0c74", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"emulator-feeder5": { "address": "0x192440c99cb17282", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
 		"emulator-reader1": { "address": "0xfd43f9148d4b725d", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } }
 	},
 	"deployments": {
@@ -69,35 +69,38 @@
 		"emulator": {
 			"FlowToken": {
 				"deployer": "emulator-oracle-FlowToken",
-				"tokenType": "A.0ae53cb6e3f42a79.FlowToken",
-				"feaderPath": "increment_oracle_feader_FlowToken",
-				"minFeaderNumber": 1
+				"priceIdentifier": "FLOW/USD",
+				"feederPath": "increment_oracle_feeder_FlowToken",
+				"readerPath": "increment_oracle_reader_FlowToken",
+				"minFeederNumber": 1
 			},
 			"FUSD": {
 				"deployer": "emulator-oracle-FUSD",
-				"tokenType": "A.f8d6e0586b0a20c7.FUSD",
-				"feaderPath": "increment_oracle_feader_FUSD",
-				"minFeaderNumber": 1
+				"priceIdentifier": "FUSD/USD",
+				"feederPath": "increment_oracle_feeder_FUSD",
+				"readerPath": "increment_oracle_reader_FUSD",
+				"minFeederNumber": 1
 			},
 			"BLT": {
 				"deployer": "emulator-oracle-BLT",
-				"tokenType": "A.f8d6e0586b0a20c7.BLT",
-				"feaderPath": "increment_oracle_feader_BLT",
-				"minFeaderNumber": 1
+				"priceIdentifier": "BLT/USD",
+				"feederPath": "increment_oracle_feeder_BLT",
+				"readerPath": "increment_oracle_reader_BLT",
+				"minFeederNumber": 1
 			}
 		}
 	},
-	"feaders": {
+	"feeders": {
 		"emulator": {
 			"FlowToken": [
-				{ "deployer": "emulator-feader1", "initPrice": "8.9" },
-				{ "deployer": "emulator-feader2", "initPrice": "8.8" }
+				{ "deployer": "emulator-feeder1", "initPrice": "8.9" },
+				{ "deployer": "emulator-feeder2", "initPrice": "8.8" }
 			],
 			"FUSD": [
-				{ "deployer": "emulator-feader1", "initPrice": "1.0" }
+				{ "deployer": "emulator-feeder1", "initPrice": "1.0" }
 			],
 			"BLT": [
-				{ "deployer": "emulator-feader1", "initPrice": "2.9" }
+				{ "deployer": "emulator-feeder1", "initPrice": "2.9" }
 			]
 		}
 	},

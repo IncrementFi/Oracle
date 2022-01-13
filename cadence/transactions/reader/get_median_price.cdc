@@ -5,12 +5,16 @@ import OracleConfig from "../../contracts/OracleConfig.cdc"
 transaction(oracleAddr: Address) {
     prepare(readerAccount: AuthAccount) {
         log("Transaction Start --------------- get price")
-        let readerCertificateRef = readerAccount.borrow<&OracleInterface.ReaderCertificate>(from: OracleConfig.ReaderCertificateStoragePath)
-                                     ?? panic("Please apply for the reader certificate first.")
-        let oracleReaderPublicRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OracleReaderPublic}>(OracleConfig.OracleReaderPublicPath).borrow()
-                              ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
-                              
-        let price = oracleReaderPublicRef.getMedianPrice(readerCertificate: readerCertificateRef)
+        let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
+                                              ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
+
+        let priceReaderSuggestedPath = oraclePublicInterface_ReaderRef.getPriceReaderStoragePath()
+
+
+        let priceReaderRef = readerAccount.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath)
+                             ?? panic("Lost local price reader resource.")
+        
+        let price = priceReaderRef.getMedianPrice()
         
         log("price: ".concat(price.toString()))
 

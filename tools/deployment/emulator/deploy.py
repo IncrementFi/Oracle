@@ -8,7 +8,7 @@ with open('./flow.json', 'r') as f:
     flow_json = json.load(f)
 
 OracleConfigs = flow_json['oracles'][Network]
-FeaderConfigs = flow_json['feaders'][Network]
+FeederConfigs = flow_json['feeders'][Network]
 ReaderConfigs = flow_json['readers'][Network]
 
 if Network == 'emulator':
@@ -37,53 +37,55 @@ print('-------------------------------------------------- init oracles:')
 for tokenName in OracleConfigs:
     oracleConfig = OracleConfigs[tokenName]
     deployer = oracleConfig['deployer']
-    tokenType = oracleConfig['tokenType']
-    feaderPath = oracleConfig['feaderPath']
+    priceIdentifier = oracleConfig['priceIdentifier']
+    feederPath = oracleConfig['feederPath']
+    readerPath = oracleConfig['readerPath']
     print('-------------------------------------------------- init oracle', deployer)
     cmd = 'flow transactions send ./cadence/transactions/oracle/init_oracle.cdc ' + \
         '--args-json \'[' + \
-        '{"type": "String", "value": "'+tokenType+'"}, ' + \
-        '{"type": "Int", "value": "'+str(oracleConfig['minFeaderNumber'])+'"}, ' + \
-        '{"type": "Path", "value": {"domain": "storage", "identifier": "'+feaderPath+'"} },' + \
-        '{"type": "Path", "value": {"domain": "public", "identifier": "'+feaderPath+'"} }]\' ' + \
+        '{"type": "String", "value": "'+priceIdentifier+'"}, ' + \
+        '{"type": "Int", "value": "'+str(oracleConfig['minFeederNumber'])+'"}, ' + \
+        '{"type": "Path", "value": {"domain": "storage", "identifier": "'+feederPath+'"} },' + \
+        '{"type": "Path", "value": {"domain": "public", "identifier": "'+feederPath+'"} },' + \
+        '{"type": "Path", "value": {"domain": "storage", "identifier": "'+readerPath+'"} }]\' ' + \
         '--signer {0}'.format(deployer)
     print(cmd)
     os.system(cmd)
 
-print('-------------------------------------------------- init feaders:')
-for tokenName in FeaderConfigs:
-    feaderList = FeaderConfigs[tokenName]
-    for feaderConfig in feaderList:
+print('-------------------------------------------------- init feeders:')
+for tokenName in FeederConfigs:
+    feederList = FeederConfigs[tokenName]
+    for feederConfig in feederList:
         oracleConfig = OracleConfigs[tokenName]
 
-        feaderDeployer = feaderConfig['deployer']
-        feaderAddr = flow_json['accounts'][feaderDeployer]['address']
-        feaderInitPrice = feaderConfig['initPrice']
+        feederDeployer = feederConfig['deployer']
+        feederAddr = flow_json['accounts'][feederDeployer]['address']
+        feederInitPrice = feederConfig['initPrice']
 
         oracleDeployer = oracleConfig['deployer']
         oracleAddr = flow_json['accounts'][oracleDeployer]['address']
         
 
-        cmd = 'flow transactions send ./cadence/transactions/feader/init_feader.cdc ' + \
+        cmd = 'flow transactions send ./cadence/transactions/feeder/mint_local_price_feeder.cdc ' + \
             '--arg Address:"{0}" '.format(oracleAddr) + \
-            '--signer {0}'.format(feaderDeployer)
+            '--signer {0}'.format(feederDeployer)
         print(cmd)
-        print('-------------------------------------------------- init feader', feaderDeployer, 'on', oracleDeployer)
+        print('-------------------------------------------------- init feeder', feederDeployer, 'on', oracleDeployer)
         os.system(cmd)
         
         #
         print('-------------------------------------------------- add whitelist:')
-        cmd = 'flow transactions send ./cadence/transactions/oracle/add_feader.cdc ' + \
-              '--arg Address:"{0}" '.format(feaderAddr) + \
+        cmd = 'flow transactions send ./cadence/transactions/oracle/add_feeder.cdc ' + \
+              '--arg Address:"{0}" '.format(feederAddr) + \
               '--signer {0}'.format(oracleDeployer)
         os.system(cmd)
         
         #
         print("-------------------------------------------------- publish init price")
-        cmd = 'flow transactions send ./cadence/transactions/feader/publish_price.cdc ' + \
+        cmd = 'flow transactions send ./cadence/transactions/feeder/publish_price.cdc ' + \
               '--arg Address:"{0}" '.format(oracleAddr) + \
-              '--arg UFix64:"{0}" '.format(feaderInitPrice) + \
-              '--signer {0}'.format(feaderDeployer)
+              '--arg UFix64:"{0}" '.format(feederInitPrice) + \
+              '--signer {0}'.format(feederDeployer)
         os.system(cmd)
 
 
@@ -94,7 +96,7 @@ for tokenName in ReaderConfigs:
     readerList = ReaderConfigs[tokenName]
     for readerConfig in readerList:
         oracleConfig = OracleConfigs[tokenName]
-        feaderConfig = FeaderConfigs[tokenName]
+        feederConfig = FeederConfigs[tokenName]
 
         oracleDeployer = oracleConfig['deployer']
         oracleAddr = flow_json['accounts'][oracleDeployer]['address']
@@ -110,8 +112,8 @@ for tokenName in ReaderConfigs:
         os.system(cmd)
         
         # apply for reader certificate
-        print('-------------------------------------------------- apply for reader certificate')
-        cmd = 'flow transactions send ./cadence/transactions/reader/apply_reader_certificate.cdc ' + \
+        print('-------------------------------------------------- mint price reader')
+        cmd = 'flow transactions send ./cadence/transactions/reader/mint_local_price_reader.cdc ' + \
               '--arg Address:"{0}" '.format(oracleAddr) + \
               '--signer {0}'.format(readerDeployer)
         os.system(cmd)

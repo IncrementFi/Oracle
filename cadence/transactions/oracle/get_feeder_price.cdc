@@ -1,13 +1,13 @@
 import OracleInterface from "../../contracts/OracleInterface.cdc"
 import OracleConfig from "../../contracts/OracleConfig.cdc"
 
-transaction(feaderAddr: Address) {
+transaction() {
     prepare(oracleAccount: AuthAccount) {
-        log("Transaction Start --------------- del feader whitelist ".concat(feaderAddr.toString()))
+        log("Transaction Start --------------- del feeder whitelist ")
         
         let oracleAdminRef = oracleAccount.borrow<&{OracleInterface.Admin}>(from: OracleConfig.OracleAdminPath) ?? panic("Lost medianizer admin resource.")
 
-        oracleAdminRef.delFeaderWhiteList(feaderAddr: feaderAddr)
+        log(oracleAdminRef.getFeederWhiteListPrice())
 
         log("End -----------------------------")
     }
