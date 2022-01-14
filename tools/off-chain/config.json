@@ -1,21 +1,104 @@
 {
-    "FLOW/USD": {
-        "method": "weighted-average",
-        "origins": [
-            [{ "origin": "binance", "pair": "FLOW/USDT" },{ "origin": ".", "pair": "USDT/USD" }],
-            [{ "origin": "okex", "pair": "FLOW/USD" }],
-            [{ "origin": "huobi", "pair": "FLOW/USD" }],
-            [{ "origin": "kraken", "pair": "FLOW/USD" }],
-            [{ "origin": "coinlist", "pair": "FLOW/USD" }]
-        ],
-        "params": {
-            "weights": {
-                "binance": 0.45,
-                "okex": 0.25,
-                "huobi": 0.2,
-                "kraken": 0.08,
-                "coinlist": 0.02
+    "domain": "emulator",
+    "stateRestPort": 15535,
+    "heartbeat": 20000,
+    "prices": {
+        "FLOW/USD": {
+            "method": "weighted-average",
+            "update": { "windowSize": 1200, "deviation": 0.005 },
+            "origins": [
+                [{ "origin": "binance",     "pair": "FLOW/USDT" }, { "origin": ".", "pair": "USDT/USD" }],
+                [{ "origin": "okex",        "pair": "FLOW/USDT" }, { "origin": ".", "pair": "USDT/USD" }],
+                [{ "origin": "huobi",       "pair": "FLOW/USDT" }, { "origin": ".", "pair": "USDT/USD" }],
+                [{ "origin": "kraken",      "pair": "FLOW/USD"  }],
+                [{ "origin": "coinlist",    "pair": "FLOW/USD"  }]
+            ],
+            "params": {
+                "weights": {
+                    "binance": 0.45,
+                    "okex": 0.25,
+                    "huobi": 0.2,
+                    "kraken": 0.08,
+                    "coinlist": 0.02
+                },
+                "minOriginNumber": 3
+            },
+            "oracleAddr": {
+                "emulator": "0x01cf0e2f2f715450",
+                "testnet": "0x00",
+                "mainnet": "0x00"
             }
+        },
+        "USDT/USD": {
+            "method": "weighted-average",
+            "update": { "windowSize": 1200, "deviation": 0.005 },
+            "origins": [
+                [{ "origin": "kraken", "pair": "USDT/USD" }],
+                [{ "origin": "ftx", "pair": "USDT/USD" }],
+                [{ "origin": "coinbase", "pair": "USDT/USD" }],
+                [{ "origin": "bitfinex", "pair": "USDT/USD" }],
+                [{ "origin": "binanceUS", "pair": "USDT/USD" }]
+            ],
+            "params": {
+                "weights": {
+                    "kraken": 0.40,
+                    "ftx": 0.35,
+                    "coinbase": 0.15,
+                    "bitfinex": 0.07,
+                    "binanceUS": 0.03
+                },
+                "minOriginNumber": 3
+            },
+            "oracleAddr": {
+                "emulator": "0x179b6b1cb6755e31",
+                "testnet": "0x00",
+                "mainnet": "0x00"
+            }
+        },
+        "BLT/USD": {
+            "method": "weighted-average",
+            "update": { "windowSize": 1200, "deviation": 0.005 },
+            "origins": [
+                [{ "origin": "ftx",    "pair": "BLT/USD"  }],
+                [{ "origin": "gateio", "pair": "BLT/USDT" }, { "origin": ".", "pair": "USDT/USD" }]
+            ],
+            "params": {
+                "weights": {
+                    "ftx": 0.50,
+                    "gateio": 0.50
+                },
+                "minOriginNumber": 1
+            },
+            "oracleAddr": {
+                "emulator": "0xf3fcd2c1a78f5eee",
+                "testnet": "0x00",
+                "mainnet": "0x00"
+            }
+        }
+    },
+    "rpc": {
+        "emulator": {
+            "accessNode": "http://localhost:8080"
+        },
+        "testnet": {
+            "accessNode": "https://access-testnet.onflow.org"
+        },
+        "mainnet": {
+            "accessNode": "https://access-mainnet-beta.onflow.org"
+        }
+    },
+    "contractAddr": {
+        "emulator": {
+            "OracleInterface": "0xf8d6e0586b0a20c7",
+            "OracleConfig": "0xf8d6e0586b0a20c7"
+        },
+        "testnet": {
+            "OracleInterface": "0x00",
+            "OracleConfig": "0x00"
+        },
+        "mainnet": {
+            "OracleInterface": "0x00",
+            "OracleConfig": "0x00"
         }
     }
   }

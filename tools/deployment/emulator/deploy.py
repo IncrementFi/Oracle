@@ -65,13 +65,14 @@ for tokenName in FeederConfigs:
         oracleDeployer = oracleConfig['deployer']
         oracleAddr = flow_json['accounts'][oracleDeployer]['address']
         
-
+        
         cmd = 'flow transactions send ./cadence/transactions/feeder/mint_local_price_feeder.cdc ' + \
             '--arg Address:"{0}" '.format(oracleAddr) + \
             '--signer {0}'.format(feederDeployer)
         print(cmd)
         print('-------------------------------------------------- init feeder', feederDeployer, 'on', oracleDeployer)
         os.system(cmd)
+
         
         #
         print('-------------------------------------------------- add whitelist:')
@@ -111,9 +112,11 @@ for tokenName in ReaderConfigs:
               '--signer {0}'.format(oracleDeployer)
         os.system(cmd)
         
+        """
         # apply for reader certificate
         print('-------------------------------------------------- mint price reader')
         cmd = 'flow transactions send ./cadence/transactions/reader/mint_local_price_reader.cdc ' + \
               '--arg Address:"{0}" '.format(oracleAddr) + \
               '--signer {0}'.format(readerDeployer)
         os.system(cmd)
+        """

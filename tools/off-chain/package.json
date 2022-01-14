@@ -1,0 +1,32 @@
+{
+  "name": "liquidation-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dryruner/liquidation-monitor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dryruner/liquidation-monitor/issues"
+  },
+  "homepage": "https://github.com/dryruner/liquidation-monitor#readme",
+  "dependencies": {
+    "@onflow/fcl": "^0.0.77",
+    "@onflow/types": "^0.0.6",
+    "bignumber.js": "^9.0.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^11.0.0",
+    "elliptic": "^6.5.4",
+    "express": "^4.17.2",
+    "https-proxy-agent": "^5.0.0",
+    "log-timestamp": "^0.3.0",
+    "node-fetch": "^2.6.2",
+    "sha3": "^2.1.4"
+  }
+}

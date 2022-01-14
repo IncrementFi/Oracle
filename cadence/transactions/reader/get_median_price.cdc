@@ -9,6 +9,16 @@ transaction(oracleAddr: Address) {
                                               ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
 
         let priceReaderSuggestedPath = oraclePublicInterface_ReaderRef.getPriceReaderStoragePath()
+        
+        // mint if non-exist
+        if (readerAccount.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath) == nil) {
+            let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
+                                ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
+
+            let priceReader <- oraclePublicInterface_ReaderRef.mintPriceReader()
+
+            readerAccount.save(<- priceReader, to: priceReaderSuggestedPath)
+        }
 
 
         let priceReaderRef = readerAccount.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath)
