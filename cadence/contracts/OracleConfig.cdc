@@ -1,7 +1,9 @@
 /**
-  * @Desc This contract stores some commonly used paths for PriceOracle
-  * 
-  * @Author Increment Labs
+
+# Desc This contract stores some commonly used paths for PriceOracle
+
+# Author Increment Labs
+
 */
 
 pub contract OracleConfig {

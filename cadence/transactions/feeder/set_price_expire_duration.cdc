@@ -1,9 +1,9 @@
 import OracleInterface from "../../contracts/OracleInterface.cdc"
 import OracleConfig from "../../contracts/OracleConfig.cdc"
 
-transaction(oracleAddr: Address, price: UFix64) {
+transaction(oracleAddr: Address, expireDuration: UInt64) {
     prepare(feederAccount: AuthAccount) {
-        log("Transaction Start --------------- set price ".concat(price.toString()).concat(" at ").concat(oracleAddr.toString()))
+        log("Transaction Start --------------- set expire time")
         
         let oraclePublicInterface_FeederRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Feeder}>(OracleConfig.OraclePublicInterface_FeederPath).borrow()
                               ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
@@ -17,7 +17,7 @@ transaction(oracleAddr: Address, price: UFix64) {
         }
         let pricePanelRef = feederAccount.borrow<&OracleInterface.PriceFeeder>(from: oraclePublicInterface_FeederRef.getPriceFeederStoragePath()) ?? panic("Lost feeder resource.")
 
-        pricePanelRef.publishPrice(price: price)
+        pricePanelRef.setExpriedDuration(blockheightDuration: expireDuration)
 
         log("End -----------------------------")
     }

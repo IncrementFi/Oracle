@@ -8,7 +8,8 @@
 
 ### Start Feeder node
 
-*  `pm2 start feeder.js --exp-backoff-restart-delay=10000`
+* `pm2 start feeder.js --exp-backoff-restart-delay=10000`
+* `tail -f ~/.pm2/logs/feeder-out.log`
 
 ### Get node state
 

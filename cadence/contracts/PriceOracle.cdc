@@ -1,27 +1,28 @@
 /**
-  * @Desc This contract is the interface description of PriceOracle.
-  *  The oracle includes an medianizer, which obtains prices from multiple feeds and calculate the median as the final price.
-  * 
-  * @Author Increment Labs
-  *
-  *  This contract will accept price offers from multiple feeders.
-  *  Feeders are anonymous for now to protect the providers from extortion.
-  *  We welcome more price-feeding institutions and partners to join in and build a more decentralized oracle on flow.
-  *
-  *  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
-  *
-  * @Structure 
-  *  Feeder1(off-chain) --> PriceFeeder(resource) 3.4$                                               PriceReader1(resource)
-  *  Feeder2(off-chain) --> PriceFeeder(resource) 3.2$ --> PriceOracle(contract) cal median 3.4$ --> PriceReader2(resource)
-  *  Feeder3(off-chain) --> PriceFeeder(resource) 3.6$                                               PriceReader3(resource)
-  *
-  * To apply for the whitelists of Feeders and Readers, pleas follow: https://increment.gitbook.io/public-documentation-1/protocols/decentralized-money-market/oracle
-  *
-  * @Robustness
-  * 1. Median value is the current referee decision strategy.
-  * 2. _MinFeederNumber determines the minimum number of feeds required to provide a valid price
-  * 3. The feeder needs to set the price expiration time. If the expiration block height is exceeded, the price will be invalid.
-  * 4. The oracle will set the price to 0.0 When a valid price cannot be provided. Contract side needs to be able to detect and deal with this abnormal price, such as terminating the transactions.
+
+# Desc This contract is the interface description of PriceOracle.
+  The oracle includes an medianizer, which obtains prices from multiple feeds and calculate the median as the final price.
+ 
+# Author Increment Labs
+
+  This contract will accept price offers from multiple feeders.
+  Feeders are anonymous for now to protect the providers from extortion.
+  We welcome more price-feeding institutions and partners to join in and build a more decentralized oracle on flow.
+
+  Currently, the use of this oracle is limited to addresses in the whitelist, and applications can be submitted to Increment Labs.
+
+# Structure 
+  Feeder1(off-chain) --> PriceFeeder(resource) 3.4$                                               PriceReader1(resource)
+  Feeder2(off-chain) --> PriceFeeder(resource) 3.2$ --> PriceOracle(contract) cal median 3.4$ --> PriceReader2(resource)
+  Feeder3(off-chain) --> PriceFeeder(resource) 3.6$                                               PriceReader3(resource)
+
+  To apply for the whitelists of Feeders and Readers, pleas follow: https://increment.gitbook.io/public-documentation-1/protocols/decentralized-money-market/oracle
+
+# Robustness
+  1. Median value is the current referee decision strategy.
+  2. _MinFeederNumber determines the minimum number of feeds required to provide a valid price
+  3. The feeder needs to set the price expiration time. If the expiration block height is exceeded, the price will be invalid.
+  4. The oracle will set the price to 0.0 When a valid price cannot be provided. Contract side needs to be able to detect and deal with this abnormal price, such as terminating the transactions.
 */
 
 import OracleInterface from "./OracleInterface.cdc"
@@ -29,28 +30,28 @@ import OracleConfig from "./OracleConfig.cdc"
 
 pub contract PriceOracle: OracleInterface {
 
-    // The identifier of the token type, eg: BTC/USD
+    /// The identifier of the token type, eg: BTC/USD
     pub var _PriceIdentifier: String?
 
-    // Storage path of local oracle certificate
+    /// Storage path of local oracle certificate
     pub let _CertificateStoragePath: StoragePath
-    // Storage path of public interface resource
+    /// Storage path of public interface resource
     pub let _OraclePublicStoragePath: StoragePath
 
-    // The contract will fetch the price according to this path on the feed node
+    /// The contract will fetch the price according to this path on the feed node
     pub var _PriceFeederPublicPath: PublicPath?
     pub var _PriceFeederStoragePath: StoragePath?
-    // Recommended path for PriceReader, users can manage resources by themselves
+    /// Recommended path for PriceReader, users can manage resources by themselves
     pub var _PriceReaderStoragePath: StoragePath?
 
-    // Address white list of feeders and readers
+    /// Address white list of feeders and readers
     access(self) let _FeederWhiteList: {Address: Bool}
     access(self) let _ReaderWhiteList: {Address: Bool}
 
-    // The minimum number of feeders to provide a valid price.
+    /// The minimum number of feeders to provide a valid price.
     pub var _MinFeederNumber: Int
 
-    // events
+    /// events
     pub event PublishOraclePrice(price: UFix64, tokenType: String, feederAddr: Address)
     pub event MintPriceReader()
     pub event MintPriceFeeder()
@@ -61,14 +62,18 @@ pub contract PriceOracle: OracleInterface {
     pub event DelReaderWhiteList(addr: Address)
 
 
-    // @Desc Oracle price reader, users need to save this resource in their local storage
-    // Only readers in the addr whitelist have permission to read prices
-    // Please do not share your PriceReader capability with others and take the responsibility of community governance.
+    /// Oracle price reader, users need to save this resource in their local storage
+    ///
+    /// Only readers in the addr whitelist have permission to read prices
+    /// Please do not share your PriceReader capability with others and take the responsibility of community governance.
+    ///
     pub resource PriceReader {
         pub let _PriceIdentifier: String
 
-        // @Desc Get the median price of all current feeds.
-        // @Return Median price, returns 0.0 if the current price is invalid
+        /// Get the median price of all current feeds.
+        ///
+        /// @Return Median price, returns 0.0 if the current price is invalid
+        ///
         pub fun getMedianPrice(): UFix64 {
             pre {
                 self.owner != nil: "PriceReader resource must be stored in local storage."
@@ -85,7 +90,8 @@ pub contract PriceOracle: OracleInterface {
         }
     }
 
-    // @Desc Panel for publishing price. Every feeder needs to mint this resource locally.
+    /// Panel for publishing price. Every feeder needs to mint this resource locally.
+    ///
     pub resource PriceFeeder: OracleInterface.PriceFeederPublic {
         access(self) var _Price: UFix64
         access(self) var _LastPublishBlockHeight: UInt64
@@ -93,8 +99,10 @@ pub contract PriceOracle: OracleInterface {
 
         pub let _PriceIdentifier: String
 
-        // @Desc The feeder uses this function to offer price at the price panel
-        // @Param price - price from off-chain
+        /// The feeder uses this function to offer price at the price panel
+        ///
+        /// @Param price - price from off-chain
+        ///
         pub fun publishPrice(price: UFix64) {
             self._Price = price
             
@@ -102,13 +110,16 @@ pub contract PriceOracle: OracleInterface {
             emit PublishOraclePrice(price: price, tokenType: PriceOracle._PriceIdentifier!, feederAddr: self.owner!.address)
         }
 
-        // @Desc Set valid duration of price. If there is no update within the duration, the price will expire.
-        // @Param blockheightDuration by the block numbers
+        /// Set valid duration of price. If there is no update within the duration, the price will expire.
+        ///
+        /// @Param blockheightDuration by the block numbers
+        ///
         pub fun setExpriedDuration(blockheightDuration: UInt64) {
             self._ExpriedDuration = blockheightDuration
         }
 
-        // @Desc Get the current feed price, this function can only be called by the PriceOracle contract
+        /// Get the current feed price, this function can only be called by the PriceOracle contract
+        ///
         pub fun fetchPrice(certificate: &OracleInterface.OracleCertificate): UFix64 {
             pre {
                 certificate.getType() == Type<@OracleCertificate>(): "PriceOracle certificate does not match."
@@ -127,44 +138,55 @@ pub contract PriceOracle: OracleInterface {
         }
     }
 
-    // All external interfaces of this contract
+    /// All external interfaces of this contract
+    ///
     pub resource OraclePublic: OracleInterface.OraclePublicInterface_Reader, OracleInterface.OraclePublicInterface_Feeder {
-        // @Desc Users who need to read the oracle price should mint this resource and save locally.
+        /// Users who need to read the oracle price should mint this resource and save locally.
+        ///
         pub fun mintPriceReader(): @PriceReader {
             emit MintPriceReader()
 
             return <- create PriceReader()
         }
 
-        // @Desc Feeders need to mint their own price panels and expose the exact public path to oralce contract
-        // @Return Resource of price panel
+        /// Feeders need to mint their own price panels and expose the exact public path to oralce contract
+        ///
+        /// @Return Resource of price panel
+        ///
         pub fun mintPriceFeeder(): @PriceFeeder {
             emit MintPriceFeeder()
 
             return <- create PriceFeeder()
         }
 
-        // @Desc Recommended path for PriceReader, users can manage resources by themselves
+        /// Recommended path for PriceReader, users can manage resources by themselves
+        ///
         pub fun getPriceReaderStoragePath(): StoragePath { return PriceOracle._PriceReaderStoragePath! }
 
-        // @Desc The oracle contract will get the feeding-price based on this path
-        // Feeders need to expose their price panel capabilities at this public path
+        /// The oracle contract will get the feeding-price based on this path
+        /// Feeders need to expose their price panel capabilities at this public path
         pub fun getPriceFeederStoragePath(): StoragePath { return PriceOracle._PriceFeederStoragePath! }
         pub fun getPriceFeederPublicPath(): PublicPath { return PriceOracle._PriceFeederPublicPath! }
     }
 
-    // @Desc Each oracle contract will hold its own certificate to identify itself.
-    // Only the oracle contract can mint the certificate.
+    /// Each oracle contract will hold its own certificate to identify itself.
+    ///
+    /// Only the oracle contract can mint the certificate.
+    ///
     pub resource OracleCertificate: OracleInterface.IdentityCertificate {}
 
-    // @Desc Reader certificate is used to provide proof of its address.In fact, anyone can mint their reader certificate.
-    // Readers only need to apply for a certificate to any oracle contract once.
-    // The contract will control the read permission of the readers according to the address whitelist.
-    // Please do not share your certificate capability with others and take the responsibility of community governance.
+    /// Reader certificate is used to provide proof of its address.In fact, anyone can mint their reader certificate.
+    ///
+    /// Readers only need to apply for a certificate to any oracle contract once.
+    /// The contract will control the read permission of the readers according to the address whitelist.
+    /// Please do not share your certificate capability with others and take the responsibility of community governance.
+    ///
     pub resource ReaderCertificate: OracleInterface.IdentityCertificate {}
 
-    // @Desc Calculate the median price
-    // @Return median price
+    /// Calculate the median price
+    ///
+    /// Return median price
+    ///
     access(contract) fun takeMedianPrice(): UFix64 {
         let oraclePrices: [UFix64] = []
         let certificateRef = self.account.borrow<&OracleCertificate>(from: self._CertificateStoragePath)
@@ -270,9 +292,10 @@ pub contract PriceOracle: OracleInterface {
     }
 
 
-    // @Desc Community administrator, Increment Labs will then collect community feedback and initiate voting for governance.
+    /// Community administrator, Increment Labs will then collect community feedback and initiate voting for governance.
+    ///
     pub resource Admin: OracleInterface.Admin {
-        // 
+        /// 
         pub fun configOracle(
             priceIdentifier: String,
             minFeederNumber: Int,
@@ -350,10 +373,13 @@ pub contract PriceOracle: OracleInterface {
 
         
         // Local admin resource
+        destroy <- self.account.load<@AnyResource>(from: OracleConfig.OracleAdminPath)
         self.account.save(<-create Admin(), to: OracleConfig.OracleAdminPath)
         // Create oracle ceritifcate
+        destroy <- self.account.load<@AnyResource>(from: self._CertificateStoragePath)
         self.account.save(<-create OracleCertificate(), to: self._CertificateStoragePath)
         // Public interface
+        destroy <- self.account.load<@AnyResource>(from: self._OraclePublicStoragePath)
         self.account.save(<-create OraclePublic(), to: self._OraclePublicStoragePath)
         self.account.link<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath, target: self._OraclePublicStoragePath)
         self.account.link<&{OracleInterface.OraclePublicInterface_Feeder}>(OracleConfig.OraclePublicInterface_FeederPath, target: self._OraclePublicStoragePath)

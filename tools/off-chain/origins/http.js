@@ -17,7 +17,7 @@ async function request(url) {
 			resp = await fetch(url,
 				{
 					method: 'GET',
-					timeout: 1
+					timeout: 10000
 				}
 			);
 		}

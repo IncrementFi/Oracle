@@ -15,6 +15,7 @@ transaction(oracleAddr: Address) {
 
             let priceReader <- oraclePublicInterface_ReaderRef.mintPriceReader()
 
+            destroy <- readerAccount.load<@AnyResource>(from: priceReaderSuggestedPath)
             readerAccount.save(<- priceReader, to: priceReaderSuggestedPath)
         }
 

@@ -160,7 +160,7 @@ async function publishPriceOnChain(priceName, curPrice) {
         states.G_LastOnChainPrices[priceName].price = curPrice
         states.G_LastOnChainPrices[priceName].time = parseInt((new Date()).getTime() / 1000)
     } catch(err) {
-        console.error('tx error', priceName, curPrice)
+        console.error('tx error', err, priceName, curPrice)
     }
 }
 

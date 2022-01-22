@@ -9,12 +9,11 @@ const path = require('path');
 const dotenv = require('dotenv')
 dotenv.config({path:path.resolve(__dirname, '../.env')})
 
-const auditAddr = config.comptrollerAddr
 
 var feederAddr = process.env[config.domain+"FeederAddr"]
 var feederPrivateKey = process.env[config.domain+"FeederPrivateKey"]
-//var feederAddr = "0xe03daebed8ca0615"
-//var feederPrivateKey = "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782"
+
+console.log(feederAddr, feederPrivateKey)
 
 const keyConfig = {
     account: feederAddr,
@@ -31,7 +30,7 @@ async function publishPrice(priceName, price) {
     
     const myAuth = UTILS.authFunc(keyConfig);
     FCL.config()
-
+    
     var CODE = "import OracleInterface from " + config.contractAddr[config.domain].OracleInterface + "\n" +
                "import OracleConfig from " + config.contractAddr[config.domain].OracleConfig + "\n" +
                "transaction(oracleAddr: Address, price: UFix64) { \n\

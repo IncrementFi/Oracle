@@ -2,7 +2,7 @@ import os
 import json
 import re
 
-Network = 'emulator'
+Network = 'testnet'
 
 with open('./flow.json', 'r') as f:
     flow_json = json.load(f)

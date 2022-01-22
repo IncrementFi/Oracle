@@ -1,5 +1,5 @@
 {
-    "domain": "testnet",
+    "domain": "emulator",
     "stateRestPort": 20173,
     "heartbeat": 60000,
     "prices": {

@@ -10,24 +10,24 @@
 		"FungibleToken": {
 			"source": "./cadence/contracts/FungibleToken.cdc",
 			"aliases": { "emulator": "0xee82856bf20e2aa6", "testnet": "0x9a0766d93b6608b7", "mainnet": "0xf233dcee88fe0abe" }
-		  },
-		  "FlowToken" : {
+		},
+		"FlowToken" : {
 			"source": "./cadence/contracts/FlowToken.cdc",
 			"aliases": { "emulator": "0x0ae53cb6e3f42a79", "testnet": "0x7e60df042a9c0868", "mainnet": "0x1654653399040a61" }
-		  },
-		  "FUSD" : {
+		},
+		"FUSD" : {
 			"source": "./cadence/contracts/FUSD.cdc",
 			"aliases": { "testnet": "0xe5b5624186770886", "mainnet": "0x3c5959b568896393" }
-		  },
-		  "BLT" : {
+		},
+		"BLT" : {
 			"source": "./cadence/contracts/BLT.cdc",
 			"aliases": { "testnet": "0x48adb192e4b081b0" }
-		  },
+		},
 
-		  "OracleInterface": "./cadence/contracts/OracleInterface.cdc",
-		  "OracleConfig": "./cadence/contracts/OracleConfig.cdc",
-		  
-		  "PriceOracle": "./cadence/contracts/PriceOracle.cdc"
+		"OracleInterface": "./cadence/contracts/OracleInterface.cdc",
+		"OracleConfig": "./cadence/contracts/OracleConfig.cdc",
+		
+		"PriceOracle": "./cadence/contracts/PriceOracle.cdc"
 	},
 
 	"networks": {
@@ -37,7 +37,7 @@
 	},
 	"accounts": {
 		"emulator-account": {
-			"address": "f8d6e0586b0a20c7",
+			"address": "0xf8d6e0586b0a20c7",
 			"key": "da193159f79102065ceb0c7cfef38910525e10a6a0c8c5109f645cb47f792a47"
 		},
 		"emulator-oracle-FlowToken": { "address": "0x01cf0e2f2f715450", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
@@ -48,7 +48,23 @@
 		"emulator-feeder3": { "address": "0x120e725050340cab", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
 		"emulator-feeder4": { "address": "0xf669cb8d41ce0c74", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
 		"emulator-feeder5": { "address": "0x192440c99cb17282", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
-		"emulator-reader1": { "address": "0xfd43f9148d4b725d", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } }
+		"emulator-reader1": { "address": "0xfd43f9148d4b725d", "key": { "privateKey": "14b15e83fc8b1725e1f949fd9770041ed35631c3035aa569654f9f795674f782", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+
+		"testnet-contract":  { "address": "0x2a9b59c3e2b72ee0", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-oracle-FlowToken": { "address": "0xcbdb5a7b89c3c844", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-oracle-USDT": 	 	{ "address": "0x6d692450d591524c", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+    	"testnet-oracle-BLT":		{ "address": "0x2d766f00eb1d0c37", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-oracle-FUSD": 	 	{ "address": "0x3b220a3372190656", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+    	"testnet-oracle-USDC":		{ "address": "0xc911d6ddfae70ce8", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-oracle-BUSD":		{ "address": "0xdad0aaa285a25413", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		
+		"testnet-feeder1": { "address": "0x28e3764c0d5c5ead", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+    	"testnet-feeder2": { "address": "0xcc84cf911ca65e72", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-feeder3": { "address": "0x23c944d5c1d92084", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-feeder4": { "address": "0x359d21e658dd2ae5", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		"testnet-feeder5": { "address": "0xc7aefd08d023205b", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
+		
+		"testnet-reader1": { "address": "0xf3ccb984310eca39", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } }
 	},
 	"deployments": {
 		"emulator": {
@@ -60,11 +76,19 @@
 				"OracleConfig",
 				"PriceOracle"
 			]
+		},
+		"testnet": {
+			"testnet-contract": [
+				"OracleInterface",
+				"OracleConfig",
+				"PriceOracle"
+			]
 		}
 	},
 	"oracles": {
 		"codeTemplate" : {
-			"emulator": "0xf8d6e0586b0a20c7"
+			"emulator": "0xf8d6e0586b0a20c7",
+			"testnet": "0x2a9b59c3e2b72ee0"
 		},
 		"emulator": {
 			"FlowToken": {
@@ -88,6 +112,50 @@
 				"readerPath": "increment_oracle_reader_BLT",
 				"minFeederNumber": 1
 			}
+		},
+		"testnet": {
+			"FlowToken": {
+				"deployer": "testnet-oracle-FlowToken",
+				"priceIdentifier": "FLOW/USD",
+				"feederPath": "increment_oracle_feeder_FlowToken",
+				"readerPath": "increment_oracle_reader_FlowToken",
+				"minFeederNumber": 3
+			},
+			"USDT": {
+				"deployer": "testnet-oracle-USDT",
+				"priceIdentifier": "USDT/USD",
+				"feederPath": "increment_oracle_feeder_USDT",
+				"readerPath": "increment_oracle_reader_USDT",
+				"minFeederNumber": 3
+			},
+			"BLT": {
+				"deployer": "testnet-oracle-BLT",
+				"priceIdentifier": "BLT/USD",
+				"feederPath": "increment_oracle_feeder_BLT",
+				"readerPath": "increment_oracle_reader_BLT",
+				"minFeederNumber": 2
+			},
+			"FUSD": {
+				"deployer": "testnet-oracle-FUSD",
+				"priceIdentifier": "FUSD/USD",
+				"feederPath": "increment_oracle_feeder_FUSD",
+				"readerPath": "increment_oracle_reader_FUSD",
+				"minFeederNumber": 1
+			},
+			"USDC": {
+				"deployer": "testnet-oracle-USDC",
+				"priceIdentifier": "USDC/USD",
+				"feederPath": "increment_oracle_feeder_USDC",
+				"readerPath": "increment_oracle_reader_USDC",
+				"minFeederNumber": 1
+			},
+			"BUSD": {
+				"deployer": "testnet-oracle-BUSD",
+				"priceIdentifier": "BUSD/USD",
+				"feederPath": "increment_oracle_feeder_BUSD",
+				"readerPath": "increment_oracle_reader_BUSD",
+				"minFeederNumber": 1
+			}
 		}
 	},
 	"feeders": {
@@ -101,6 +169,50 @@
 			],
 			"BLT": [
 				{ "deployer": "emulator-feeder1", "initPrice": "2.9" }
+			]
+		},
+		"testnet": {
+			"FlowToken": [
+				{ "deployer": "testnet-feeder1", "initPrice": "5.0" },
+				{ "deployer": "testnet-feeder2", "initPrice": "5.0" },
+				{ "deployer": "testnet-feeder3", "initPrice": "5.0" },
+				{ "deployer": "testnet-feeder4", "initPrice": "5.0" },
+				{ "deployer": "testnet-feeder5", "initPrice": "5.0" }
+			],
+			"USDT": [
+				{ "deployer": "testnet-feeder1", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder2", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder3", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder4", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder5", "initPrice": "1.0" }
+			],
+			"BLT": [
+				{ "deployer": "testnet-feeder1", "initPrice": "1.5" },
+				{ "deployer": "testnet-feeder2", "initPrice": "1.5" },
+				{ "deployer": "testnet-feeder3", "initPrice": "1.5" },
+				{ "deployer": "testnet-feeder4", "initPrice": "1.5" },
+				{ "deployer": "testnet-feeder5", "initPrice": "1.5" }
+			],
+			"FUSD": [
+				{ "deployer": "testnet-feeder1", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder2", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder3", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder4", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder5", "initPrice": "1.0" }
+			],
+			"USDC": [
+				{ "deployer": "testnet-feeder1", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder2", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder3", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder4", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder5", "initPrice": "1.0" }	
+			],
+			"BUSD": [
+				{ "deployer": "testnet-feeder1", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder2", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder3", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder4", "initPrice": "1.0" },
+				{ "deployer": "testnet-feeder5", "initPrice": "1.0" }
 			]
 		}
 	},
@@ -117,6 +229,26 @@
 			"BLT": [
 				{ "deployer": "emulator-reader1" },
 				{ "deployer": "emulator-account" }
+			]
+		},
+		"testnet": {
+			"FlowToken": [
+				{ "deployer": "testnet-reader1" }
+			],
+			"USDT": [
+				{ "deployer": "testnet-reader1" }
+			],
+			"BLT": [
+				{ "deployer": "testnet-reader1" }
+			],
+			"FUSD": [
+				{ "deployer": "testnet-reader1" }
+			],
+			"USDC": [
+				{ "deployer": "testnet-reader1" }
+			],
+			"BUSD": [
+				{ "deployer": "testnet-reader1" }
 			]
 		}
 	}

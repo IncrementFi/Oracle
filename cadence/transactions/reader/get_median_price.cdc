@@ -17,6 +17,7 @@ transaction(oracleAddr: Address) {
 
             let priceReader <- oraclePublicInterface_ReaderRef.mintPriceReader()
 
+            destroy <- readerAccount.load<@AnyResource>(from: priceReaderSuggestedPath)
             readerAccount.save(<- priceReader, to: priceReaderSuggestedPath)
         }
 
@@ -26,6 +27,8 @@ transaction(oracleAddr: Address) {
         
         let price = priceReaderRef.getMedianPrice()
         
+        assert(price > 0.0, message: "Invalid oracle price 0.0")
+
         log("price: ".concat(price.toString()))
 
         log("End -----------------------------")
