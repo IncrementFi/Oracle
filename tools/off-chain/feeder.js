@@ -194,10 +194,10 @@ async function pullAllPrices_Hearbeat(originToAllPairs) {
             console.log('over time publish', priceName, lastPrice, 'to', curPrice)
             await publishPriceOnChain(priceName, curPrice)
         } else if(lastPrice == 0.0 && curPrice > 0.0) {
-            console.log('over time publish', priceName, lastPrice, 'to', curPrice)
+            console.log('first publish', priceName, lastPrice, 'to', curPrice)
             await publishPriceOnChain(priceName, curPrice)
-        } else if((curPrice-lastPrice)/lastPrice > deviation) {
-            console.log('over time publish', priceName, lastPrice, 'to', curPrice)
+        } else if(Math.abs((curPrice-lastPrice)/lastPrice) > deviation) {
+            console.log('over price publish', priceName, lastPrice, 'to', curPrice)
             await publishPriceOnChain(priceName, curPrice)
         }
     }
