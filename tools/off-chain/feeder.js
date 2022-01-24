@@ -107,7 +107,6 @@ function calOraclePrice(allPricesToOrigins) {
     // fist round cal the ./ price
     for (let priceName in config.prices) {
         var price = mergePriceFromOrigins(priceName, allPricesToOrigins, finalPrices)
-
         if (price > 0) {
             finalPrices[priceName] = price
         }
@@ -136,7 +135,6 @@ function integratePrices(method, params, prices, targetPriceName){
         let minOriginNumber = params.minOriginNumber
 
         if( Object.keys(prices).length < minOriginNumber) {
-            states.G_PriceStates[targetPriceName] = "no enough origin prices "+Object.keys(prices).length+"<"+minOriginNumber
             return 0.0
         }
         for (let curOrigin in prices) {
@@ -156,9 +154,14 @@ function integratePrices(method, params, prices, targetPriceName){
 async function publishPriceOnChain(priceName, curPrice) {
     try {
         await FlowOracleAPI.publishPrice(priceName, curPrice)
+        console.log("tx update succ",priceName, curPrice)
         states.G_LastOnChainPrices[priceName] = {}
         states.G_LastOnChainPrices[priceName].price = curPrice
-        states.G_LastOnChainPrices[priceName].time = parseInt((new Date()).getTime() / 1000)
+        
+        let localtime = new Date();
+        let utc = localtime.getTime()/1000
+
+        states.G_LastOnChainPrices[priceName].time = utc
     } catch(err) {
         console.error('tx error', err, priceName, curPrice)
     }
@@ -173,7 +176,10 @@ async function pullAllPrices_Hearbeat(originToAllPairs) {
     
     for (priceName in finalPrice) {
         var curPrice = finalPrice[priceName]
-        var curTime = parseInt((new Date()).getTime() / 1000)
+
+        let localtime = new Date();
+        let utc = localtime.getTime()/1000
+        var curTime = utc
 
         var lastPrice = 0.0
         var lastTime = 0

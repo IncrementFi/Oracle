@@ -14,14 +14,22 @@ var G_OriginStates = {}
 var G_PriceStates = {}
 var G_LastOnChainPrices = {}
 
-
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","GET");
+    res.header("X-Powered-By",' 3.2.1')
+    res.header("Content-Type", "application/json;charset=utf-8");
+    next();
+});
 
 app.get('/states', async (req, res) => {
     var curPrices = {}
     for (priceName in G_LastOnChainPrices) {
         curPrices[priceName] = {}
         curPrices[priceName].price = G_LastOnChainPrices[priceName].price
-        var deltTime = parseInt((new Date()).getTime() / 1000) - G_LastOnChainPrices[priceName].time
+        var localtime = new Date()
+        var deltTime = localtime.getTime()/1000 - G_LastOnChainPrices[priceName].time
         curPrices[priceName].time = G_LastOnChainPrices[priceName].time
         curPrices[priceName].since = parseInt(deltTime/60)+"m "+parseInt(deltTime)%60+"s"
     }

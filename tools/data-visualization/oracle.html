@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .link {
+        fill: none;
+        stroke: #555;
+        stroke-opacity: 0.4;
+        stroke-width: 1px;
+    }
+    text {
+        font-family: "Arial Black", Gadget, sans-serif;
+        fill: black;
+        font-weight: bold;
+        font-size: 14px
+    }
+
+    .xAxis .tick text{
+        fill: black;
+    }
+    .grid .tick line{
+        stroke: grey;
+        stroke-dasharray: 5, 10;
+        opacity: 0.7;
+    }
+    .grid path{
+        stroke-width: 0;
+    }
+
+    .node circle {
+        fill: #999;
+    }
+    .node--internal circle {
+        fill: #555;
+    }
+    .node--internal text {
+        font-size: 16px;
+        text-shadow: 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff;
+    }
+    .node--leaf text {
+        fill: white;
+    }
+    .ballG text {
+        fill: white;
+    }
+
+    .shadow {
+        -webkit-filter: drop-shadow( -1.5px -1.5px 1.5px #000 );
+        filter: drop-shadow( -1.5px -1.5px 1.5px #000 );
+    }
+</style>
+<head>
+    <title>Oracle States</title>
+</head>
+<body>
+    <h1 style="text-align:center">Oracle States</h1>
+    <p style="text-align:center">by Increment Labs</p>
+    <svg width="960" height="1600"></svg>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    // main svg
+    const GREEN = "#00eb84"
+    const RED = "#ff3b5b"
+    const GRAY = "#999999"
+
+    const screenX = document.body.clientWidth
+    const screenY = document.body.clientHeight
+
+    var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height"),
+            g = svg.append("g").attr("transform", "translate(20,0)");       // move right 20px.
+    svg.attr("transform", function(d) {
+                    return "translate(" + 100 + "," + 0 + ")";
+                })
+
+    // Setting up a way to handle the data
+    var tree = d3.cluster()                 // This D3 API method setup the Dendrogram datum position.
+            .size([height, width - 260])    // Total width - bar chart width = Dendrogram chart width
+            .separation(function separate(a, b) {
+                return a.parent == b.parent            // 2 levels tree grouping for category
+                || a.parent.parent == b.parent
+                || a.parent == b.parent.parent ? 0.4 : 0.8;
+            });
+
+    var stratify = d3.stratify()            // This D3 API method gives cvs file flat data array dimensions.
+            .parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf(".")); });
+    
+    var data_clear = {
+        "PriceState": {
+            "FLOW/USD": {
+                "binance": "Loading",
+                "okex": "Loading",
+                "huobi": "Loading",
+                "kraken": "Loading",
+                "coinlist": "Loading"
+            },
+            "USDT/USD": {
+                "kraken": "Loading",
+                "ftx": "Loading",
+                "coinbase": "Loading",
+                "bitfinex": "Loading",
+                "binanceUS": "Loading"
+            },
+            "BLT/USD": {
+                "ftx": "Loading",
+                "gateio": "Loading"
+            }
+        },
+        "UpdatePrice": {
+            "USDT/USD": {
+                "price": "Loading",
+                "time": 0
+            },
+            "BLT/USD": {
+                "price": "Loading",
+                "time": 0
+            },
+            "FLOW/USD": {
+                "price": "Loading",
+                "time": 0
+            }
+        }
+    }
+
+    data = [
+        {id: 'Ps', value: 0, color: GREEN},
+        {id: 'Ps.FLOW/USD', value: 0, color: GRAY},
+        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
+        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.binance', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.okex', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.huobi', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.coinlist', value: "Loading", color: GRAY},
+
+        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
+        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.binance', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.okex', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.huobi', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.coinlist', value: "Loading", color: GRAY},
+
+        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
+        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.binance', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.okex', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.huobi', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.coinlist', value: "Loading", color: GRAY},
+
+        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
+        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.binance', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.okex', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.huobi', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.coinlist', value: "Loading", color: GRAY},
+
+        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
+        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.binance', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.okex', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.huobi', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.coinlist', value: "Loading", color: GRAY},
+        /////////////
+        {id: 'Ps.USDT/USD', value: 0, color: GRAY},
+        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
+        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.coinbase', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.binanceUS', value: "Loading", color: GRAY},
+
+        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
+        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.coinbase', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.binanceUS', value: "Loading", color: GRAY},
+        
+        {id: 'Ps.USDT/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
+        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.coinbase', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.binanceUS', value: "Loading", color: GRAY},
+
+        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
+        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.coinbase', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.binanceUS', value: "Loading", color: GRAY},
+
+        {id: 'Ps.USDT/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
+        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.kraken', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.coinbase', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.binanceUS', value: "Loading", color: GRAY},
+        ////////////
+        {id: 'Ps.BLT/USD', value: 0, color: GRAY},
+        {id: 'Ps.BLT/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
+        {id: 'Ps.BLT/USD.0x28e3764c0d5c5ead.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.BLT/USD.0x28e3764c0d5c5ead.gateio', value: "Loading", color: GRAY},
+
+        {id: 'Ps.BLT/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
+        {id: 'Ps.BLT/USD.0xcc84cf911ca65e72.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.BLT/USD.0xcc84cf911ca65e72.gateio', value: "Loading", color: GRAY},
+
+        {id: 'Ps.BLT/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
+        {id: 'Ps.BLT/USD.0x23c944d5c1d92084.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.BLT/USD.0x23c944d5c1d92084.gateio', value: "Loading", color: GRAY},
+
+        {id: 'Ps.BLT/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
+        {id: 'Ps.BLT/USD.0x359d21e658dd2ae5.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.BLT/USD.0x359d21e658dd2ae5.gateio', value: "Loading", color: GRAY},
+
+        {id: 'Ps.BLT/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
+        {id: 'Ps.BLT/USD.0xc7aefd08d023205b.ftx', value: "Loading", color: GRAY},
+        {id: 'Ps.BLT/USD.0xc7aefd08d023205b.gateio', value: "Loading", color: GRAY},
+    ]
+    let nodeAddr = [
+        "0x28e3764c0d5c5ead",
+        "0xcc84cf911ca65e72",
+        "0x23c944d5c1d92084",
+        "0x359d21e658dd2ae5",
+        "0xc7aefd08d023205b"
+    ]
+    
+    function update(state, oracleIndex) {
+        var updateOriginPrices = {}
+        for (let pairName in state.PriceState) {
+            for (let origin in state.PriceState[pairName]) {
+                var id = "Ps." + pairName + "." + nodeAddr[oracleIndex] + "." + origin
+                var value = state.PriceState[pairName][origin]
+                updateOriginPrices[id] = {}
+                if (!isNaN(parseFloat(value))) {
+                    var num = parseFloat(value).toFixed(8)
+                    updateOriginPrices[id]["value"] = num
+                    if (num > 0.0) {
+                        updateOriginPrices[id]["color"] = GREEN
+                    } else {
+                        updateOriginPrices[id]["color"] = RED
+                    }
+                } else {
+                    updateOriginPrices[id]["value"] = value
+                    if (value == "Loading") {
+                        updateOriginPrices[id]["color"] = GRAY
+                    } else {
+                        updateOriginPrices[id]["color"] = RED
+                    }
+                }
+            }
+        }
+        var updateTx = {}
+        for (let pairName in state.UpdatePrice) {
+            var id = "Ps." + pairName + "." + nodeAddr[oracleIndex]
+            var value = state.UpdatePrice[pairName].price
+
+            let localtime = new Date();
+            let utc = localtime.getTime()/1000
+            var deltTime = utc - state.UpdatePrice[pairName].time
+            var timeStr = parseInt(deltTime/60)+"m "+parseInt(deltTime)%60+"s"
+
+            updateTx[id] = {}
+            updateTx[id].since = timeStr
+            if (isNaN(parseFloat(value))) {
+                updateTx[id].value = value
+                if (value == "Loading") {
+                    updateTx[id]["color"] = GRAY
+                    deltTime = 0
+                    updateTx[id].since = "0s"
+                } else {
+                    updateTx[id]["color"] = RED
+                }
+            } else {
+                var num = parseFloat(value).toFixed(8)
+                updateTx[id].value = parseFloat(value).toFixed(8)
+                if (num > 0.0) {
+                    updateTx[id]["color"] = GREEN
+                } else {
+                    updateTx[id]["color"] = RED
+                }
+            }
+            if (deltTime/60 > 25.0) {
+                updateTx[id].color = RED
+            }
+        }
+
+        var leafNodeAll = g.selectAll(".node--leaf").each(
+            function(d, i) {
+                var id = d.id
+                if (id in updateOriginPrices) {
+                    var newData = updateOriginPrices[id]
+                    var cur = d3.select(this)
+                    var leaf = cur.select("g.node--leaf-g")
+                    leaf.select("rect.shadow").style("fill", function (d) {
+                        return newData.color;
+                    });
+                    leaf.select("text#value").text(function (d) {
+                        return newData.value;
+                    });
+                }
+            }
+        )
+        var leafNodeAll = g.selectAll(".node--internal").each(
+            function(d, i) {
+                var id = d.id
+                if (id in updateTx) {
+                    var newData = updateTx[id]
+                    var cur = d3.select(this)
+                    cur.select("rect.shadow").style("fill", function (d) {
+                        return newData.color;
+                    });
+                    cur.select("text#value").text(function (d) {
+                        return newData.value;
+                    });
+                    cur.select("text#time").text(function (d) {
+                        return newData.since;
+                    });
+                }
+            }
+        )
+    }
+
+
+    function draw(data) {
+        var root = stratify(data);
+        tree(root);    
+        // Draw every datum a line connecting to its parent.
+        var link = g.selectAll(".link")
+                .data(root.descendants().slice(1))
+                .enter().append("path")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    return "M" + d.y + "," + d.x
+                            + "C" + (d.parent.y + 100) + "," + d.x
+                            + " " + (d.parent.y + 100) + "," + d.parent.x
+                            + " " + d.parent.y + "," + d.parent.x;
+                });
+
+        // Setup position for every datum; Applying different css classes to parents and leafs.
+        var node = g.selectAll(".node")
+                .data(root.descendants())
+                .enter().append("g")
+                .attr("class", function(d) {
+                    return "node" + (d.children ? " node--internal" : " node--leaf"); 
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + d.y + "," + d.x + ")";
+                })
+                .attr("id", function(d) {return d.id;});
+
+        // Draw every datum a small circle.
+        node.append("circle")
+                .attr("r", 4);
+
+        // Setup G for every leaf datum.
+        var leafNodeG = g.selectAll(".node--leaf")
+                .append("g")
+                .attr("class", "node--leaf-g")
+                .attr("transform", "translate(" + 8 + "," + -10 + ")");
+
+        leafNodeG.append("rect")
+                .attr("class","shadow")
+                .style("fill", function (d) {return d.data.color;})
+                .attr("width", 2)
+                .attr("height", 20)
+                .attr("rx", 2)
+                .attr("ry", 2)
+                .transition()
+                    .duration(800)
+                    .attr("width", 200);
+
+        leafNodeG.append("text")
+                .attr("dy", 14.5)
+                .attr("x", 8)
+                .style("text-anchor", "start")
+                .text(function (d) {
+                    return d.data.id.substring(d.data.id.lastIndexOf(".") + 1);
+                });
+        leafNodeG.append("text")
+                .attr("dy", 14.5)
+                .attr("x", 100)
+                .attr("id", "value")
+                .style("text-anchor", "start")
+                .text(function (d) {
+                    return d.data.value;
+                });
+
+        // Write down text for every parent datum
+        var internalNode = g.selectAll(".node--internal")
+        internalNode.append("text")
+                .attr("y", -10)
+                .attr("id", function(d) {
+                    return d.data.id
+                })
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    return d.data.id.substring(d.data.id.lastIndexOf(".") + 1);
+                });
+
+        var internalNodeMid = internalNode.filter(function(d) {
+                    return d.data.id != "Ps"
+                });
+        internalNodeMid.append("rect")
+                .attr("class","shadow")
+                .attr("y", 10)
+                .attr("x", -60)
+                .style("fill", function (d) {return d.data.color;})
+                .attr("width", 2)
+                .attr("height", 20)
+                .attr("rx", 2)
+                .attr("ry", 2)
+                .transition()
+                    .duration(800)
+                    .attr("width", 120);
+        internalNodeMid.append("text")
+                .attr("y", 26)
+                .attr("id", "value")
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    return d.data.value;
+                });
+        internalNodeMid.append("text").filter(function(d) {
+                    return d.data.id.split('.').length > 2
+                })
+                .attr("y", 26)
+                .attr("x", 80)
+                .attr("id", "time")
+                .style("text-anchor", "left")
+                .text(function (d) {
+                    return "0s";
+                });
+
+
+    }
+    draw(data)
+    function row(d) {
+        return {
+            id: d.id,
+            value: +d.value,
+            color: d.color
+        };
+    }
+
+    // node5
+    async function fetchOracle(ip, oracleIndex, deltTime) {
+        update(data_clear, oracleIndex)
+        fetch('http://'+ip+':20173/states', {method: 'GET', mode: 'cors'})
+            .then(res => res.json())
+            .then((state) => {
+                console.log('Fetch state ', oracleIndex, state);
+                update(state, oracleIndex)
+        }).catch(err => console.error(err));
+
+        setTimeout(fetchOracle, deltTime, ip, oracleIndex, deltTime)
+    }
+    
+    
+    fetchOracle("52.32.72.92", 0, 60000)
+    setTimeout(fetchOracle, 1500, "3.134.152.231", 1, 60000)
+    setTimeout(fetchOracle, 3000, "3.140.163.242", 2, 60000)
+    setTimeout(fetchOracle, 4500, "52.5.114.239", 3, 60000)
+    setTimeout(fetchOracle, 6000, "34.225.183.58", 4, 60000)
+    //fetchOracle("3.134.152.231", 1, 30*1000)
+    //fetchOracle("3.140.163.242", 2, 30*1000)
+    //fetchOracle("52.5.114.239", 3, 30*1000)
+    //fetchOracle("34.225.183.58", 4, 30*1000)
+</script>
