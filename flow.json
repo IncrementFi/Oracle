@@ -7,26 +7,8 @@
 	},
 
 	"contracts": {
-		"FungibleToken": {
-			"source": "./cadence/contracts/FungibleToken.cdc",
-			"aliases": { "emulator": "0xee82856bf20e2aa6", "testnet": "0x9a0766d93b6608b7", "mainnet": "0xf233dcee88fe0abe" }
-		},
-		"FlowToken" : {
-			"source": "./cadence/contracts/FlowToken.cdc",
-			"aliases": { "emulator": "0x0ae53cb6e3f42a79", "testnet": "0x7e60df042a9c0868", "mainnet": "0x1654653399040a61" }
-		},
-		"FUSD" : {
-			"source": "./cadence/contracts/FUSD.cdc",
-			"aliases": { "testnet": "0xe5b5624186770886", "mainnet": "0x3c5959b568896393" }
-		},
-		"BLT" : {
-			"source": "./cadence/contracts/BLT.cdc",
-			"aliases": { "testnet": "0x48adb192e4b081b0" }
-		},
-
 		"OracleInterface": "./cadence/contracts/OracleInterface.cdc",
 		"OracleConfig": "./cadence/contracts/OracleConfig.cdc",
-		
 		"PriceOracle": "./cadence/contracts/PriceOracle.cdc"
 	},
 
@@ -64,14 +46,11 @@
 		"testnet-feeder4": { "address": "0x359d21e658dd2ae5", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
 		"testnet-feeder5": { "address": "0xc7aefd08d023205b", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } },
 		
-		"testnet-reader1": { "address": "0xf3ccb984310eca39", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } }
+		"testnet-reader1": { "address": "0xf2d5e5a95edaf3cc", "key": { "privateKey": "3e173ab34b4629ee8e16ee95a6aacb5f088fc95e53ba28ef0f528bf8bcce51ec", "type": "hex", "index": 0, "signatureAlgorithm": "ECDSA_secp256k1", "hashAlgorithm": "SHA3_256" } }
 	},
 	"deployments": {
 		"emulator": {
 			"emulator-account": [
-				"FUSD",
-				"BLT",
-
 				"OracleInterface",
 				"OracleConfig",
 				"PriceOracle"

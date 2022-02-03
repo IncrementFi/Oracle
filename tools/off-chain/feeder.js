@@ -175,7 +175,7 @@ async function pullAllPrices_Hearbeat(originToAllPairs) {
     var finalPrice = calOraclePrice(allPricesToOrigins)
     
     for (priceName in finalPrice) {
-        var curPrice = finalPrice[priceName]
+        var curPrice = parseFloat(finalPrice[priceName]).toFixed(8)
 
         let localtime = new Date();
         let utc = localtime.getTime()/1000
