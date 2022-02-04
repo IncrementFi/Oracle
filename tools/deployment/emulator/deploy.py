@@ -130,13 +130,3 @@ for tokenName in ReaderConfigs:
               '--signer {0} '.format(oracleDeployer) + \
               '--network {0}'.format(Network)
         os.system(cmd)
-        
-        """
-        # apply for reader certificate
-        print('-------------------------------------------------- mint price reader')
-        cmd = 'flow transactions send ./cadence/transactions/reader/mint_local_price_reader.cdc ' + \
-              '--arg Address:"{0}" '.format(oracleAddr) + \
-              '--signer {0} '.format(readerDeployer) + \
-              '--network {0}'.format(Network)
-        os.system(cmd)
-        """

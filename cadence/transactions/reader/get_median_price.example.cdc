@@ -12,9 +12,7 @@ transaction(oracleAddr: Address) {
         
         // mint if non-exist
         if (readerAccount.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath) == nil) {
-            let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
-                                ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
-
+            
             let priceReader <- oraclePublicInterface_ReaderRef.mintPriceReader()
 
             destroy <- readerAccount.load<@AnyResource>(from: priceReaderSuggestedPath)

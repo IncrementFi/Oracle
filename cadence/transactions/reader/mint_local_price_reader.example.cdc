@@ -7,12 +7,11 @@ transaction(oracleAddr: Address) {
         
         let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
                                               ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
+        
         let priceReaderSuggestedPath = oraclePublicInterface_ReaderRef.getPriceReaderStoragePath()
-        // check if alraedy minted
-        if (readerAccount.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath) == nil) {
-            let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
-                                ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
 
+        // check if already minted
+        if (readerAccount.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath) == nil) {
             let priceReader <- oraclePublicInterface_ReaderRef.mintPriceReader()
 
             destroy <- readerAccount.load<@AnyResource>(from: priceReaderSuggestedPath)
