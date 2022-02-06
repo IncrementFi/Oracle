@@ -36,7 +36,7 @@ async function request(pairs) {
 	try {
 		respJson = await resp.json();
 	} catch {
-		throw( Error("bitfinex parse request result json error.") )
+		throw( Error("bitfinex parse request error["+url+"]") )
 	}
 
 	if (respJson.length > 0) {

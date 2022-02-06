@@ -15,7 +15,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json()
 	} catch(err) {
-		throw( Error("binance parse request result json error.") )
+		throw( Error("binance parse request error ["+url+"]") )
 	}
 
 	return respJson

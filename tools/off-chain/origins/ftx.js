@@ -12,7 +12,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json()
 	} catch(err) {
-		throw( Error("ftx parse request result json error.") )
+		throw( Error("ftx parse request error["+url+"]") )
 	}
 	if (respJson.success != true) {
 		throw(Error("ftx respJson error."));

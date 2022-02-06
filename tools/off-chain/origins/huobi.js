@@ -17,7 +17,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json()
 	} catch(err) {
-		throw( Error("huobi parse request result json error.") )
+		throw( Error("huobi parse request error["+url+"]") )
 	}
 	if (respJson.status != 'ok' ) {
 		throw(Error("huobi respJson error "+respJson.status))

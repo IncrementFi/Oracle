@@ -21,7 +21,7 @@ async function request(pairs) {
 	try {
 		respJson = await resp.json();
 	} catch {
-		throw( Error("kraken parse request result json error.") )
+		throw( Error("kraken parse request error["+url+"]") )
 	}
 
 	if (respJson.error.length == 0) {

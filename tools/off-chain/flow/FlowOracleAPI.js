@@ -13,7 +13,6 @@ dotenv.config({path:path.resolve(__dirname, '../.env')})
 var feederAddr = process.env[config.domain+"FeederAddr"]
 var feederPrivateKey = process.env[config.domain+"FeederPrivateKey"]
 
-console.log(feederAddr, feederPrivateKey)
 
 const keyConfig = {
     account: feederAddr,

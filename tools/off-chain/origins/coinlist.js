@@ -14,7 +14,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json()
 	} catch(err) {
-		throw( Error("coinlist parse request result json error.") )
+		throw( Error("coinlist parse request error["+url+"]") )
 	}
 
 	return respJson.symbol
@@ -69,7 +69,7 @@ async function PullPrice(pairs) {
 }
 
 
-//(async () => { console.log( await requestAll({ "FLOW/USD":0.0, "BTC/USDT": 0.0 }) ) })()
+(async () => { console.log( await requestAll({ "FLOW/USD":0.0, "BTC/USDT": 0.0 }) ) })()
 
 module.exports = {
     PullPrice

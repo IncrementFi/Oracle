@@ -15,7 +15,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json()
 	} catch(err) {
-		throw( Error("gateio parse request result json error.") )
+		throw( Error("gateio parse request error["+url+"]") )
 	}
 	if (respJson.length == 0) {
 		throw(Error("gateio respJson error"));

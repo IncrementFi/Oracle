@@ -15,7 +15,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json();
 	} catch {
-		throw( Error("coinbase parse request result json error.") )
+		throw( Error("coinbase parse request error["+url+"]") )
 	}
 	
 	return respJson

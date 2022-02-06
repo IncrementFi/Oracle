@@ -15,7 +15,7 @@ async function requestOne(pair) {
 	try {
 		respJson = await resp.json()
 	} catch(err) {
-		throw( Error("okex parse request result json error.") )
+		throw( Error("okex parse request error["+url+"]") )
 	}
 	if (respJson.code != "0") {
 		throw(Error("okex respJson error: "+respJson.msg));

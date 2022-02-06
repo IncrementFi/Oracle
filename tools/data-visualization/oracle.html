@@ -47,13 +47,36 @@
         -webkit-filter: drop-shadow( -1.5px -1.5px 1.5px #000 );
         filter: drop-shadow( -1.5px -1.5px 1.5px #000 );
     }
+    .network-badge {
+        order: 1;
+        font-weight: bold;
+        width: 100px;
+        color: #13BF69;
+        margin: auto;
+        background-color: #00000020;
+        height: 17px;
+        padding: 5px;
+        border-radius: 4px;
+        text-align: center;
+        line-height: 17px;
+        cursor: default;
+    }
 </style>
 <head>
     <title>Oracle States</title>
 </head>
 <body>
-    <h1 style="text-align:center">Oracle States</h1>
-    <p style="text-align:center">by Increment Labs</p>
+    <h1 style="text-align:center">
+        
+        <img height="40" width="40" src="https://i.postimg.cc/1zJhY4fj/increment.png">
+        Price Oracle States
+        on Flow
+        <img height="40" width="40" src="https://i.postimg.cc/FHdSDJzT/flow.png">
+    </h1>
+    
+    <div class="network-badge">Testnet</div>
+
+    <p style="text-align:center">by <a href="" style="color:#5584f7;">Increment Labs</a></p>
     <svg width="960" height="1600"></svg>
 </body>
 
@@ -126,100 +149,113 @@
     }
 
     data = [
-        {id: 'Ps', value: 0, color: GREEN},
-        {id: 'Ps.FLOW/USD', value: 0, color: GRAY},
-        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
-        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.binance', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.okex', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.huobi', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x28e3764c0d5c5ead.coinlist', value: "Loading", color: GRAY},
+        {id: 'Price', value: 0, color: GREEN},
+        {id: 'Price.FLOW/USD', value: 0, color: GRAY},
+        {id: 'Price.FLOW/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
+        {id: 'Price.FLOW/USD.0x28e3764c0d5c5ead.binance', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x28e3764c0d5c5ead.okex', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x28e3764c0d5c5ead.huobi', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x28e3764c0d5c5ead.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x28e3764c0d5c5ead.coinlist', value: "Loading", color: GRAY},
 
-        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
-        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.binance', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.okex', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.huobi', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xcc84cf911ca65e72.coinlist', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
+        {id: 'Price.FLOW/USD.0xcc84cf911ca65e72.binance', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xcc84cf911ca65e72.okex', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xcc84cf911ca65e72.huobi', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xcc84cf911ca65e72.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xcc84cf911ca65e72.coinlist', value: "Loading", color: GRAY},
 
-        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
-        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.binance', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.okex', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.huobi', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x23c944d5c1d92084.coinlist', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
+        {id: 'Price.FLOW/USD.0x23c944d5c1d92084.binance', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x23c944d5c1d92084.okex', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x23c944d5c1d92084.huobi', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x23c944d5c1d92084.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x23c944d5c1d92084.coinlist', value: "Loading", color: GRAY},
 
-        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
-        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.binance', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.okex', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.huobi', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0x359d21e658dd2ae5.coinlist', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
+        {id: 'Price.FLOW/USD.0x359d21e658dd2ae5.binance', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x359d21e658dd2ae5.okex', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x359d21e658dd2ae5.huobi', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x359d21e658dd2ae5.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0x359d21e658dd2ae5.coinlist', value: "Loading", color: GRAY},
 
-        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
-        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.binance', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.okex', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.huobi', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.FLOW/USD.0xc7aefd08d023205b.coinlist', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
+        {id: 'Price.FLOW/USD.0xc7aefd08d023205b.binance', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xc7aefd08d023205b.okex', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xc7aefd08d023205b.huobi', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xc7aefd08d023205b.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.FLOW/USD.0xc7aefd08d023205b.coinlist', value: "Loading", color: GRAY},
         /////////////
-        {id: 'Ps.USDT/USD', value: 0, color: GRAY},
-        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
-        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.coinbase', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.bitfinex', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x28e3764c0d5c5ead.binanceUS', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD', value: 0, color: GRAY},
+        {id: 'Price.USDT/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
+        {id: 'Price.USDT/USD.0x28e3764c0d5c5ead.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x28e3764c0d5c5ead.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x28e3764c0d5c5ead.coinbase', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x28e3764c0d5c5ead.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x28e3764c0d5c5ead.binanceUS', value: "Loading", color: GRAY},
 
-        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
-        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.coinbase', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.bitfinex', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xcc84cf911ca65e72.binanceUS', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
+        {id: 'Price.USDT/USD.0xcc84cf911ca65e72.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xcc84cf911ca65e72.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xcc84cf911ca65e72.coinbase', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xcc84cf911ca65e72.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xcc84cf911ca65e72.binanceUS', value: "Loading", color: GRAY},
         
-        {id: 'Ps.USDT/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
-        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.coinbase', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.bitfinex', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x23c944d5c1d92084.binanceUS', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
+        {id: 'Price.USDT/USD.0x23c944d5c1d92084.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x23c944d5c1d92084.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x23c944d5c1d92084.coinbase', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x23c944d5c1d92084.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x23c944d5c1d92084.binanceUS', value: "Loading", color: GRAY},
 
-        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
-        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.coinbase', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.bitfinex', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0x359d21e658dd2ae5.binanceUS', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
+        {id: 'Price.USDT/USD.0x359d21e658dd2ae5.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x359d21e658dd2ae5.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x359d21e658dd2ae5.coinbase', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x359d21e658dd2ae5.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0x359d21e658dd2ae5.binanceUS', value: "Loading", color: GRAY},
 
-        {id: 'Ps.USDT/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
-        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.kraken', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.coinbase', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.bitfinex', value: "Loading", color: GRAY},
-        {id: 'Ps.USDT/USD.0xc7aefd08d023205b.binanceUS', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
+        {id: 'Price.USDT/USD.0xc7aefd08d023205b.kraken', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xc7aefd08d023205b.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xc7aefd08d023205b.coinbase', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xc7aefd08d023205b.bitfinex', value: "Loading", color: GRAY},
+        {id: 'Price.USDT/USD.0xc7aefd08d023205b.binanceUS', value: "Loading", color: GRAY},
         ////////////
-        {id: 'Ps.BLT/USD', value: 0, color: GRAY},
-        {id: 'Ps.BLT/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
-        {id: 'Ps.BLT/USD.0x28e3764c0d5c5ead.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.BLT/USD.0x28e3764c0d5c5ead.gateio', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD', value: 0, color: GRAY},
+        {id: 'Price.BLT/USD.0x28e3764c0d5c5ead', value: 0, color: GRAY},
+        {id: 'Price.BLT/USD.0x28e3764c0d5c5ead.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0x28e3764c0d5c5ead.gateio', value: "Loading", color: GRAY},
 
-        {id: 'Ps.BLT/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
-        {id: 'Ps.BLT/USD.0xcc84cf911ca65e72.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.BLT/USD.0xcc84cf911ca65e72.gateio', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0xcc84cf911ca65e72', value: 0, color: GRAY},
+        {id: 'Price.BLT/USD.0xcc84cf911ca65e72.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0xcc84cf911ca65e72.gateio', value: "Loading", color: GRAY},
 
-        {id: 'Ps.BLT/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
-        {id: 'Ps.BLT/USD.0x23c944d5c1d92084.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.BLT/USD.0x23c944d5c1d92084.gateio', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0x23c944d5c1d92084', value: 0, color: GRAY},
+        {id: 'Price.BLT/USD.0x23c944d5c1d92084.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0x23c944d5c1d92084.gateio', value: "Loading", color: GRAY},
 
-        {id: 'Ps.BLT/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
-        {id: 'Ps.BLT/USD.0x359d21e658dd2ae5.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.BLT/USD.0x359d21e658dd2ae5.gateio', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0x359d21e658dd2ae5', value: 0, color: GRAY},
+        {id: 'Price.BLT/USD.0x359d21e658dd2ae5.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0x359d21e658dd2ae5.gateio', value: "Loading", color: GRAY},
 
-        {id: 'Ps.BLT/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
-        {id: 'Ps.BLT/USD.0xc7aefd08d023205b.ftx', value: "Loading", color: GRAY},
-        {id: 'Ps.BLT/USD.0xc7aefd08d023205b.gateio', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0xc7aefd08d023205b', value: 0, color: GRAY},
+        {id: 'Price.BLT/USD.0xc7aefd08d023205b.ftx', value: "Loading", color: GRAY},
+        {id: 'Price.BLT/USD.0xc7aefd08d023205b.gateio', value: "Loading", color: GRAY},
     ]
+    var g_pairPrice = {
+        "Price.FLOW/USD": {
+        },
+        "Price.USDT/USD": {
+        },
+        "Price.BLT/USD": {
+        },
+    }
+    var pairPriceMinNum = {
+        "Price.FLOW/USD": 3,
+        "Price.USDT/USD": 3,
+        "Price.BLT/USD": 3
+    }
     let nodeAddr = [
         "0x28e3764c0d5c5ead",
         "0xcc84cf911ca65e72",
@@ -232,7 +268,7 @@
         var updateOriginPrices = {}
         for (let pairName in state.PriceState) {
             for (let origin in state.PriceState[pairName]) {
-                var id = "Ps." + pairName + "." + nodeAddr[oracleIndex] + "." + origin
+                var id = "Price." + pairName + "." + nodeAddr[oracleIndex] + "." + origin
                 var value = state.PriceState[pairName][origin]
                 updateOriginPrices[id] = {}
                 if (!isNaN(parseFloat(value))) {
@@ -255,7 +291,7 @@
         }
         var updateTx = {}
         for (let pairName in state.UpdatePrice) {
-            var id = "Ps." + pairName + "." + nodeAddr[oracleIndex]
+            var id = "Price." + pairName + "." + nodeAddr[oracleIndex]
             var value = state.UpdatePrice[pairName].price
 
             let localtime = new Date();
@@ -273,10 +309,12 @@
                     updateTx[id].since = "0s"
                 } else {
                     updateTx[id]["color"] = RED
+                    g_pairPrice['Price.'+pairName][id] = 0.0
                 }
             } else {
                 var num = parseFloat(value).toFixed(8)
                 updateTx[id].value = parseFloat(value).toFixed(8)
+                g_pairPrice['Price.'+pairName][id] = value
                 if (num > 0.0) {
                     updateTx[id]["color"] = GREEN
                 } else {
@@ -319,6 +357,46 @@
                     cur.select("text#time").text(function (d) {
                         return newData.since;
                     });
+                }
+                if (id in g_pairPrice) {
+                    var data = g_pairPrice[id]
+                    var pairColor = GRAY
+                    var pairPrice = "Loading"
+                    if (Object.keys(data).length >= pairPriceMinNum[id]) {
+                        var validNum = 0;
+                        var priceList = []
+                        for (var subPriceId in data) {
+                            var subPrice = data[subPriceId]
+                            if (isNaN(parseFloat(subPrice))) {
+
+                            } else if ( subPrice > 0.0) {
+                                validNum++
+                                priceList.push(subPrice)
+                            }
+                        }
+                        if(validNum >= pairPriceMinNum[id] ) {
+                            pairColor = GREEN
+                            priceList.sort();
+                            if(validNum%2==1) {
+                                pairPrice = priceList[parseInt(priceList.length/2)]
+                            } else {
+                                pairPrice = (priceList[parseInt(priceList.length/2)-1] + priceList[parseInt(priceList.length/2)])/2.0
+                            }
+                            pairPrice = parseFloat(pairPrice).toFixed(8)
+                        } else {
+                            pairColor = RED
+                            pairPrice = 0.0
+                        }
+                    }
+
+                    var cur = d3.select(this)
+                    cur.select("rect.shadow").style("fill", function (d) {
+                        return pairColor;
+                    });
+                    cur.select("text#value").text(function (d) {
+                        return pairPrice;
+                    });
+                    
                 }
             }
         )
@@ -402,7 +480,7 @@
                 });
 
         var internalNodeMid = internalNode.filter(function(d) {
-                    return d.data.id != "Ps"
+                    return d.data.id != "Price"
                 });
         internalNodeMid.append("rect")
                 .attr("class","shadow")
@@ -433,6 +511,8 @@
                 .text(function (d) {
                     return "0s";
                 });
+        
+                
 
 
     }
@@ -464,8 +544,4 @@
     setTimeout(fetchOracle, 3000, "3.140.163.242", 2, 60000)
     setTimeout(fetchOracle, 4500, "52.5.114.239", 3, 60000)
     setTimeout(fetchOracle, 6000, "34.225.183.58", 4, 60000)
-    //fetchOracle("3.134.152.231", 1, 30*1000)
-    //fetchOracle("3.140.163.242", 2, 30*1000)
-    //fetchOracle("52.5.114.239", 3, 30*1000)
-    //fetchOracle("34.225.183.58", 4, 30*1000)
 </script>

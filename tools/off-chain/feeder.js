@@ -151,9 +151,24 @@ function integratePrices(method, params, prices, targetPriceName){
     return price
 }
 
+function timeout(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function publishPriceWithTimeout(priceName, curPrice) {
+	await Promise.race([
+
+		FlowOracleAPI.publishPrice(priceName, curPrice),
+
+		timeout(40000).then(() => {
+			throw new Error("tx time out")
+		}),
+	]).then().catch(console.error)
+}
 async function publishPriceOnChain(priceName, curPrice) {
     try {
-        await FlowOracleAPI.publishPrice(priceName, curPrice)
+        //await FlowOracleAPI.publishPrice(priceName, curPrice)
+        await publishPriceWithTimeout(priceName, curPrice)
         console.log("tx update succ",priceName, curPrice)
         states.G_LastOnChainPrices[priceName] = {}
         states.G_LastOnChainPrices[priceName].price = curPrice
