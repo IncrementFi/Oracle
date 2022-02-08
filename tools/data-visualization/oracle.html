@@ -380,7 +380,11 @@
                             if(validNum%2==1) {
                                 pairPrice = priceList[parseInt(priceList.length/2)]
                             } else {
-                                pairPrice = (priceList[parseInt(priceList.length/2)-1] + priceList[parseInt(priceList.length/2)])/2.0
+                                pairPrice = (
+                                        parseFloat(priceList[parseInt(priceList.length/2)-1])
+                                        +
+                                        parseFloat(priceList[parseInt(priceList.length/2)])
+                                    )/2.0
                             }
                             pairPrice = parseFloat(pairPrice).toFixed(8)
                         } else {
