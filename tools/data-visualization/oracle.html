@@ -524,8 +524,6 @@
                 .text(function (d) {
                     return "0s";
                 });
-        
-                
 
 
     }
@@ -541,14 +539,14 @@
     // node5
     async function fetchOracle(ip, oracleIndex, deltTime, ifTimeout=true) {
         update(data_clear, oracleIndex)
-        fetch('http://'+ip+':20173/states', {method: 'GET', mode: 'cors'})
+        fetch('https://oracles.increment.fi/node'+(oracleIndex+1), {method: 'GET', mode: 'cors'})
             .then(res => res.json())
             .then((state) => {
                 console.log('Fetch state ', oracleIndex, state);
                 update(state, oracleIndex)
         }).catch(err => {
             console.error(err)
-            fetchOracle(ip, oracleIndex, deltTime, false)
+            setTimeout(fetchOracle, 5000, ip, oracleIndex, deltTime, false)
         });
 
         if(ifTimeout) setTimeout(fetchOracle, deltTime, ip, oracleIndex, deltTime)
