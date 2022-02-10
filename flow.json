@@ -112,7 +112,7 @@
 				"priceIdentifier": "BLT/USD",
 				"feederPath": "increment_oracle_feeder_BLT",
 				"readerPath": "increment_oracle_reader_BLT",
-				"minFeederNumber": 2
+				"minFeederNumber": 3
 			},
 			"FUSD": {
 				"deployer": "testnet-oracle-FUSD",

@@ -125,8 +125,6 @@ pub contract interface OracleInterface {
         pub fun addReaderWhiteList(readerAddr: Address)
         pub fun delFeederWhiteList(feederAddr: Address)
         pub fun delReaderWhiteList(readerAddr: Address)
-        pub fun getFeederWhiteList(): [Address]
-        pub fun getReaderWhiteList(): [Address]
         pub fun getFeederWhiteListPrice(): [UFix64]   
     }
 }

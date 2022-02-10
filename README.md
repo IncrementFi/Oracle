@@ -74,7 +74,7 @@ More Info: [docs](https://increment.gitbook.io/public-documentation-1/protocols/
         + the address the contract which will use the price
         + project name and purpose to use the price
 
-2. Mint the PriceReader resource by the specific oraclee contract and store it in local storage.
+2. Mint the PriceReader resource by the specific oraclee contract and save it in local storage.
     * example: `cadence/transactions/reader/mint_local_price_reader.example.cdc`
 
 3. Get the median price via the PriceReader resource.
