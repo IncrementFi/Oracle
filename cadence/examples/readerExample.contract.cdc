@@ -37,15 +37,15 @@ pub contract OraclePriceUseContract {
 
     pub fun mintPriceReader(oracleAddr: Address) {
         /// Oracle contract's interface
-        let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
+        let oracleRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath).borrow()
                                               ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
         /// Recommended storage path for PriceReader resource
-        let priceReaderSuggestedPath = oraclePublicInterface_ReaderRef.getPriceReaderStoragePath()
+        let priceReaderSuggestedPath = oracleRef.getPriceReaderStoragePath()
 
         /// check if already minted
         if (self.account.borrow<&OracleInterface.PriceReader>(from: priceReaderSuggestedPath) == nil) {
             /// price reader resource
-            let priceReader <- oraclePublicInterface_ReaderRef.mintPriceReader()
+            let priceReader <- oracleRef.mintPriceReader()
 
             destroy <- self.account.load<@AnyResource>(from: priceReaderSuggestedPath)
             self.account.save(<- priceReader, to: priceReaderSuggestedPath)

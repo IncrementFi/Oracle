@@ -95,6 +95,7 @@ pub contract PriceOracle: OracleInterface {
     pub resource PriceFeeder: OracleInterface.PriceFeederPublic {
         access(self) var _Price: UFix64
         access(self) var _LastPublishBlockHeight: UInt64
+        /// seconds
         access(self) var _ExpriedDuration: UInt64
 
         pub let _PriceIdentifier: String

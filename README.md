@@ -1,12 +1,15 @@
 # Increment Oracle
 There's currently no price oracle service living on Flow blockchain. We're building and maintaining a price oracle service that combines both decentralization and practicability. The service may also serve as public goods for other projects building on Flow blockchain.<br>
-More Info: [docs](https://increment.gitbook.io/public-documentation-1/protocols/decentralized-money-market/oracle)
+More Info: [docs](https://docs.increment.fi/protocols/decentralized-money-market)
 <br>
 
 ## 🧩 Project Overview
 <p>
-    <a href="https://increment.gitbook.io/public-documentation-1/protocols/decentralized-money-market/oracle">
+    <a href="https://docs.increment.fi/protocols/decentralized-money-market">
         <img width="700" src="framework.png" />
+    </a>
+    <a href="https://docs.increment.fi/protocols/decentralized-money-market">
+        <img width="700" src="contract framework.png" />
     </a>
 </p>
 <br>
@@ -35,10 +38,7 @@ More Info: [docs](https://increment.gitbook.io/public-documentation-1/protocols/
 <br>
 
 ## Current Price States
-[Testnet States](https://)
-<br>
-
-[Mainnet States](https://)
+[Testnet States](https://testnet.increment.fi/oracle)
 <br>
 
 ## 💹 Oracle deployed
@@ -50,6 +50,8 @@ More Info: [docs](https://increment.gitbook.io/public-documentation-1/protocols/
     USDC/USD: 0xc911d6ddfae70ce8
     BUSD/USD: 0xdad0aaa285a25413
     BLT/USD:  0x2d766f00eb1d0c37
+
+    TEST/USD: 0x24650d6246d4176c  // for testing without whitelist
 ```
 ### mainnet
 ```

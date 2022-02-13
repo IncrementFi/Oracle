@@ -15,9 +15,9 @@ transaction(oracleAddr: Address, expireDuration: UInt64) {
             feederAccount.save(<- priceFeeder, to: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
             feederAccount.link<&{OracleInterface.PriceFeederPublic}>(oraclePublicInterface_FeederRef.getPriceFeederPublicPath(), target: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
         }
-        let pricePanelRef = feederAccount.borrow<&OracleInterface.PriceFeeder>(from: oraclePublicInterface_FeederRef.getPriceFeederStoragePath()) ?? panic("Lost feeder resource.")
+        let priceFeederRef = feederAccount.borrow<&OracleInterface.PriceFeeder>(from: oraclePublicInterface_FeederRef.getPriceFeederStoragePath()) ?? panic("Lost feeder resource.")
 
-        pricePanelRef.setExpriedDuration(blockheightDuration: expireDuration)
+        priceFeederRef.setExpriedDuration(blockheightDuration: expireDuration)
 
         log("End -----------------------------")
     }

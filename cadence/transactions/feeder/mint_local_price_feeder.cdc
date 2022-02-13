@@ -3,17 +3,14 @@ import OracleConfig from "../../contracts/OracleConfig.cdc"
 
 transaction(oracleAddr: Address) {
     prepare(feederAccount: AuthAccount) {
-        log("Transaction Start --------------- init feeder ".concat(oracleAddr.toString()))
         
         let oraclePublicInterface_FeederRef = getAccount(oracleAddr).getCapability<&{OracleInterface.OraclePublicInterface_Feeder}>(OracleConfig.OraclePublicInterface_FeederPath).borrow()
                               ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
-        //if (feederAccount.borrow<&OracleInterface.PriceFeeder>(from: oraclePublicInterface_FeederRef.getPriceFeederStoragePath()) == nil) {
-            let priceFeeder <- oraclePublicInterface_FeederRef.mintPriceFeeder()
+        
+        let priceFeeder <- oraclePublicInterface_FeederRef.mintPriceFeeder()
 
-            destroy <- feederAccount.load<@AnyResource>(from: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
-            feederAccount.save(<- priceFeeder, to: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
-            feederAccount.link<&{OracleInterface.PriceFeederPublic}>(oraclePublicInterface_FeederRef.getPriceFeederPublicPath(), target: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
-        //}
-        log("End -----------------------------")
+        destroy <- feederAccount.load<@AnyResource>(from: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
+        feederAccount.save(<- priceFeeder, to: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
+        feederAccount.link<&{OracleInterface.PriceFeederPublic}>(oraclePublicInterface_FeederRef.getPriceFeederPublicPath(), target: oraclePublicInterface_FeederRef.getPriceFeederStoragePath())
     }
 }
