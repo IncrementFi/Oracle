@@ -23,6 +23,7 @@ const keyConfig = {
 
 
 async function publishPrice(priceName, price) {
+    try {
     price = (parseFloat(price)*1.000).toFixed(8).toString()
     let domain = config.domain
     let oracleAddr = config.prices[priceName].oracleAddr[domain]
@@ -54,7 +55,15 @@ async function publishPrice(priceName, price) {
         FCL.payer(myAuth),
         FCL.limit(9999),
     ]);
-    return await FCL.tx(response).onceSealed();
+
+    
+        let res = await FCL.tx(response).onceSealed();
+    } catch (err) {
+        console.log("inner tx error", err)
+        throw(err)
+    }
+
+    return res
 }
 
 

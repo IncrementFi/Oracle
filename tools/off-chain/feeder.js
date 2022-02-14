@@ -157,13 +157,12 @@ function timeout(ms) {
 
 async function publishPriceWithTimeout(priceName, curPrice) {
 	await Promise.race([
-
-		FlowOracleAPI.publishPrice(priceName, curPrice),
-
+        FlowOracleAPI.publishPrice(priceName, curPrice),
+        
 		timeout(40000).then(() => {
 			throw new Error("tx time out")
 		}),
-	]).then().catch(console.error)
+	]).then().catch( (err)=>{ console.log(err); throw(err) } )
 }
 async function publishPriceOnChain(priceName, curPrice) {
     try {
