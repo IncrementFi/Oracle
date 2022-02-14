@@ -59,7 +59,6 @@ async function publishPrice(priceName, price) {
     
         let res = await FCL.tx(response).onceSealed();
     } catch (err) {
-        console.log("inner tx error", err)
         throw(err)
     }
 

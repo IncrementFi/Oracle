@@ -162,7 +162,7 @@ async function publishPriceWithTimeout(priceName, curPrice) {
 		timeout(40000).then(() => {
 			throw new Error("tx time out")
 		}),
-	]).then().catch( (err)=>{ console.log(err); throw(err) } )
+	]).then().catch( (err)=>{ throw(err) } )
 }
 async function publishPriceOnChain(priceName, curPrice) {
     try {
@@ -177,7 +177,7 @@ async function publishPriceOnChain(priceName, curPrice) {
 
         states.G_LastOnChainPrices[priceName].time = utc
     } catch(err) {
-        console.error('tx error', err, priceName, curPrice)
+        console.error('tx error', priceName, curPrice)
     }
 }
 
