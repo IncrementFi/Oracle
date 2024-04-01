@@ -6,17 +6,17 @@
 
 */
 
-pub contract OracleConfig {
+access(all) contract OracleConfig {
     // Admin resource stored in every PriceOracle contract
-    pub let OracleAdminPath: StoragePath
+    access(all) let OracleAdminPath: StoragePath
     // Reader public interface exposed in every PriceOracle contract
-    pub let OraclePublicInterface_ReaderPath: PublicPath
+    access(all) let OraclePublicInterface_ReaderPath: PublicPath
     // Feeder public interface exposed in every PriceOracle contract
-    pub let OraclePublicInterface_FeederPath: PublicPath
+    access(all) let OraclePublicInterface_FeederPath: PublicPath
     // Recommended storage path of reader's certificate
-    pub let ReaderCertificateStoragePath: StoragePath
+    access(all) let ReaderCertificateStoragePath: StoragePath
 
-    pub fun sortUFix64List(list: [UFix64]): [UFix64] {
+    access(all) view fun sortUFix64List(list: [UFix64]): [UFix64] {
         let len = list.length
         var preIndex = 0
         var current = 0.0
@@ -34,7 +34,7 @@ pub contract OracleConfig {
         return list
     }
 
-    pub fun sortUInt64List(list: [UInt64]): [UInt64] {
+    access(all) view fun sortUInt64List(list: [UInt64]): [UInt64] {
         let len = list.length
         var preIndex = 0
         var current: UInt64 = 0
