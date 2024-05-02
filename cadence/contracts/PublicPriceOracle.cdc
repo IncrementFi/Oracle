@@ -34,7 +34,7 @@ access(all) contract PublicPriceOracle {
     ///   2. A fixed window of time has passed (by default 2000 blocks)
     /// Note: It is recommended to check the updated block height of this data with getLatestBlockHeight(), and handle the extreme condition if this data is too old.
     ///
-    access(all) fun getLatestPrice(oracleAddr: Address): UFix64 {
+    access(all) view fun getLatestPrice(oracleAddr: Address): UFix64 {
         let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).capabilities.borrow<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath)
                                                     ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
         let priceReaderSuggestedPath = oraclePublicInterface_ReaderRef.getPriceReaderStoragePath()
@@ -46,7 +46,7 @@ access(all) contract PublicPriceOracle {
     
     /// Get the block height at the time of the latest update.
     ///
-    access(all) fun getLatestBlockHeight(oracleAddr: Address): UInt64 {
+    access(all) view fun getLatestBlockHeight(oracleAddr: Address): UInt64 {
         let oraclePublicInterface_ReaderRef = getAccount(oracleAddr).capabilities.borrow<&{OracleInterface.OraclePublicInterface_Reader}>(OracleConfig.OraclePublicInterface_ReaderPath)
                                                     ?? panic("Lost oracle public capability at ".concat(oracleAddr.toString()))
         let priceReaderSuggestedPath = oraclePublicInterface_ReaderRef.getPriceReaderStoragePath()
@@ -57,12 +57,11 @@ access(all) contract PublicPriceOracle {
         return medianBlockHeight
     }
 
-    access(all) fun getAllSupportedOracles(): {Address: String} {
+    access(all) view fun getAllSupportedOracles(): {Address: String} {
         return self.oracleAddrToPriceIdentifier
     }
 
     access(all) resource Admin {
-
         access(all) fun addOracle(oracleAddr: Address) {
             if (!PublicPriceOracle.oracleAddrToPriceIdentifier.containsKey(oracleAddr)) {
                 /// Mint oracle reader

@@ -84,15 +84,15 @@ access(all) contract PriceOracle: OracleInterface {
             return priceMedian
         }
 
-        access(all) fun getPriceIdentifier(): String {
+        access(all) view fun getPriceIdentifier(): String {
             return self._PriceIdentifier
         }
 
-        access(all) fun getRawMedianPrice(): UFix64 {
+        access(all) view fun getRawMedianPrice(): UFix64 {
             return PriceOracle.getRawMedianPrice()
         }
 
-        access(all) fun getRawMedianBlockHeight(): UInt64 {
+        access(all) view fun getRawMedianBlockHeight(): UInt64 {
             return PriceOracle.getRawMedianBlockHeight()
         }
 
@@ -116,7 +116,7 @@ access(all) contract PriceOracle: OracleInterface {
         ///
         /// @Param price - price from off-chain
         ///
-        access(all) fun publishPrice(price: UFix64) {
+        access(OracleInterface.FeederAuth) fun publishPrice(price: UFix64) {
             self._Price = price
             
             self._LastPublishBlockHeight = getCurrentBlock().height
@@ -127,7 +127,7 @@ access(all) contract PriceOracle: OracleInterface {
         ///
         /// @Param blockheightDuration by the block numbers
         ///
-        access(all) fun setExpiredDuration(blockheightDuration: UInt64) {
+        access(OracleInterface.FeederAuth) fun setExpiredDuration(blockheightDuration: UInt64) {
             self._ExpiredDuration = blockheightDuration
         }
 
@@ -146,18 +146,18 @@ access(all) contract PriceOracle: OracleInterface {
 
         /// Get the current feed price regardless of whether it's expired or not.
         ///
-        access(all) fun getRawPrice(certificate: &{OracleInterface.OracleCertificate}): UFix64 {
+        access(all) view fun getRawPrice(certificate: &{OracleInterface.OracleCertificate}): UFix64 {
             pre {
                 certificate.getType() == Type<@OracleCertificate>(): "PriceOracle certificate does not match."
             }
             return self._Price
         }
 
-        access(all) fun getLatestPublishBlockHeight(): UInt64 {
+        access(all) view fun getLatestPublishBlockHeight(): UInt64 {
             return self._LastPublishBlockHeight
         }
 
-        access(all) fun getExpiredHeightDuration(): UInt64 {
+        access(all) view fun getExpiredHeightDuration(): UInt64 {
             return self._ExpiredDuration
         }
 
@@ -196,8 +196,8 @@ access(all) contract PriceOracle: OracleInterface {
 
         /// The oracle contract will get the feeding-price based on this path
         /// Feeders need to expose their price panel capabilities at this public path
-        access(all) fun getPriceFeederStoragePath(): StoragePath { return PriceOracle._PriceFeederStoragePath! }
-        access(all) fun getPriceFeederPublicPath(): PublicPath { return PriceOracle._PriceFeederPublicPath! }
+        access(all) view fun getPriceFeederStoragePath(): StoragePath { return PriceOracle._PriceFeederStoragePath! }
+        access(all) view fun getPriceFeederPublicPath(): PublicPath { return PriceOracle._PriceFeederPublicPath! }
     }
 
     /// Each oracle contract will hold its own certificate to identify itself.
@@ -256,7 +256,7 @@ access(all) contract PriceOracle: OracleInterface {
         return mid
     }
 
-    access(contract) fun getFeederWhiteListPrice(): [UFix64] {
+    access(contract) view fun getFeederWhiteListPrice(): [UFix64] {
         let certificateRef = self.account.storage.borrow<&OracleCertificate>(from: self._CertificateStoragePath)
             ?? panic("Lost PriceOracle certificate resource.")
         var priceList: [UFix64] = []
@@ -266,12 +266,12 @@ access(all) contract PriceOracle: OracleInterface {
             if (pricePanelCap != nil && pricePanelCap!.check()) {
                 let price = pricePanelCap!.borrow()!.fetchPrice(certificate: certificateRef)
                 if(price > 0.0) {
-                    priceList.append(price)
+                    priceList = priceList.concat([price])
                 } else {
-                    priceList.append(0.0)
+                    priceList = priceList.concat([0.0])
                 }
             } else {
-                priceList.append(0.0)
+                priceList = priceList.concat([0.0])
             }
         }
         return priceList
@@ -279,16 +279,16 @@ access(all) contract PriceOracle: OracleInterface {
 
     /// Calculate the *raw* median of the price feed with no filtering of expired data.
     ///
-    access(contract) fun getRawMedianPrice(): UFix64 {
+    access(contract) view fun getRawMedianPrice(): UFix64 {
         let certificateRef = self.account.storage.borrow<&OracleCertificate>(from: self._CertificateStoragePath) ?? panic("Lost PriceOracle certificate resource.")
         var priceList: [UFix64] = []
         for oracleAddr in PriceOracle._FeederWhiteList.keys {
             let pricePanelCap = getAccount(oracleAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
             if (pricePanelCap != nil && pricePanelCap!.check()) {
                 let price = pricePanelCap!.borrow()!.getRawPrice(certificate: certificateRef)
-                priceList.append(price)
+                priceList = priceList.concat([price])
             } else {
-                priceList.append(0.0)
+                priceList = priceList.concat([0.0])
             }
         }
         // sort
@@ -309,16 +309,16 @@ access(all) contract PriceOracle: OracleInterface {
 
     /// Calculate the published block height of the *raw* median data. If it's an even list, it is the smaller one of the two middle value.
     ///
-    access(contract) fun getRawMedianBlockHeight(): UInt64 {
+    access(contract) view fun getRawMedianBlockHeight(): UInt64 {
         let certificateRef = self.account.storage.borrow<&OracleCertificate>(from: self._CertificateStoragePath) ?? panic("Lost PriceOracle certificate resource.")
         var latestBlockHeightList: [UInt64] = []
         for oracleAddr in PriceOracle._FeederWhiteList.keys {
             let pricePanelCap = getAccount(oracleAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
             if (pricePanelCap != nil && pricePanelCap!.check()) {
                 let latestPublishBlockHeight = pricePanelCap!.borrow()!.getLatestPublishBlockHeight()
-                latestBlockHeightList.append(latestPublishBlockHeight)
+                latestBlockHeightList = latestBlockHeightList.concat([latestPublishBlockHeight])
             } else {
-                latestBlockHeightList.append(0)
+                latestBlockHeightList = latestBlockHeightList.concat([0])
             }
         }
         // sort
@@ -358,11 +358,11 @@ access(all) contract PriceOracle: OracleInterface {
         self._PriceReaderStoragePath = readerStoragePath
     }
 
-    access(all) fun getFeederWhiteList(): [Address] {
+    access(all) view fun getFeederWhiteList(): [Address] {
         return PriceOracle._FeederWhiteList.keys
     }
 
-    access(all) fun getReaderWhiteList(from: UInt64, to: UInt64): [Address] {
+    access(all) view fun getReaderWhiteList(from: UInt64, to: UInt64): [Address] {
         let readerAddrs = PriceOracle._ReaderWhiteList.keys
         let readerLen = UInt64(readerAddrs.length)
         assert(from <= to && from < readerLen, message: "Index out of range")
@@ -370,13 +370,7 @@ access(all) contract PriceOracle: OracleInterface {
         if _to == 0 || _to == UInt64.max || _to >= readerLen {
             _to = readerLen-1
         }
-        let list: [Address] = []
-        var cur = from
-        while cur <= _to && cur < readerLen {
-            list.append(readerAddrs[cur])
-            cur = cur + 1
-        }
-        return list
+        return readerAddrs.slice(from: Int(from), upTo: Int(_to+1))
     }
 
     /// Community administrator, Increment Labs will then collect community feedback and initiate voting for governance.
@@ -424,19 +418,18 @@ access(all) contract PriceOracle: OracleInterface {
             emit DelReaderWhiteList(addr: readerAddr)
         }
 
-        access(all) fun getFeederWhiteListPrice(): [UFix64] {
+        access(all) view fun getFeederWhiteListPrice(): [UFix64] {
             return PriceOracle.getFeederWhiteListPrice()
         }
 
-        access(all) fun getFeederWhiteList(): [Address] {
+        access(all) view fun getFeederWhiteList(): [Address] {
             return PriceOracle._FeederWhiteList.keys
         }
 
-        access(all) fun getReaderWhiteList(): [Address] {
+        access(all) view fun getReaderWhiteList(): [Address] {
             return PriceOracle._ReaderWhiteList.keys
         }
     }
-
 
     init() {
         self._FeederWhiteList = {}
