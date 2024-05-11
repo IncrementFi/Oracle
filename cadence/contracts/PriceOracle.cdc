@@ -227,8 +227,8 @@ access(all) contract PriceOracle: OracleInterface {
         for oracleAddr in self._FeederWhiteList.keys {
             let pricePanelCap = getAccount(oracleAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
             // Get valid feeding-price
-            if (pricePanelCap != nil && pricePanelCap!.check()) {
-                let price = pricePanelCap!.borrow()!.fetchPrice(certificate: certificateRef)
+            if (pricePanelCap.check()) {
+                let price = pricePanelCap.borrow()!.fetchPrice(certificate: certificateRef)
                 if(price > 0.0) {
                     /// cannot use append() as this is inside view function
                     priceList = priceList.concat([price])
@@ -263,8 +263,8 @@ access(all) contract PriceOracle: OracleInterface {
 
         for oracleAddr in PriceOracle._FeederWhiteList.keys {
             let pricePanelCap = getAccount(oracleAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
-            if (pricePanelCap != nil && pricePanelCap!.check()) {
-                let price = pricePanelCap!.borrow()!.fetchPrice(certificate: certificateRef)
+            if (pricePanelCap.check()) {
+                let price = pricePanelCap.borrow()!.fetchPrice(certificate: certificateRef)
                 if(price > 0.0) {
                     priceList = priceList.concat([price])
                 } else {
@@ -284,8 +284,8 @@ access(all) contract PriceOracle: OracleInterface {
         var priceList: [UFix64] = []
         for oracleAddr in PriceOracle._FeederWhiteList.keys {
             let pricePanelCap = getAccount(oracleAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
-            if (pricePanelCap != nil && pricePanelCap!.check()) {
-                let price = pricePanelCap!.borrow()!.getRawPrice(certificate: certificateRef)
+            if (pricePanelCap.check()) {
+                let price = pricePanelCap.borrow()!.getRawPrice(certificate: certificateRef)
                 priceList = priceList.concat([price])
             } else {
                 priceList = priceList.concat([0.0])
@@ -314,8 +314,8 @@ access(all) contract PriceOracle: OracleInterface {
         var latestBlockHeightList: [UInt64] = []
         for oracleAddr in PriceOracle._FeederWhiteList.keys {
             let pricePanelCap = getAccount(oracleAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
-            if (pricePanelCap != nil && pricePanelCap!.check()) {
-                let latestPublishBlockHeight = pricePanelCap!.borrow()!.getLatestPublishBlockHeight()
+            if (pricePanelCap.check()) {
+                let latestPublishBlockHeight = pricePanelCap.borrow()!.getLatestPublishBlockHeight()
                 latestBlockHeightList = latestBlockHeightList.concat([latestPublishBlockHeight])
             } else {
                 latestBlockHeightList = latestBlockHeightList.concat([0])
@@ -396,7 +396,7 @@ access(all) contract PriceOracle: OracleInterface {
         access(all) fun addFeederWhiteList(feederAddr: Address) {
             // Check if feeder prepared price panel first
             let PriceFeederCap = getAccount(feederAddr).capabilities.get<&{OracleInterface.PriceFeederPublic}>(PriceOracle._PriceFeederPublicPath!)
-            assert(PriceFeederCap != nil && PriceFeederCap!.check(), message: "Need to prepare data feeder resource capability first.")
+            assert(PriceFeederCap.check(), message: "Need to prepare data feeder resource capability first.")
 
             PriceOracle._FeederWhiteList[feederAddr] = true
 
