@@ -1,5 +1,5 @@
 transaction() {
-    prepare(userAccount: AuthAccount) {
+    prepare(userAccount: auth(AddKey) &Account) {
         var index = 0
         while (index < 30) {
             userAccount.keys.add(publicKey: PublicKey(
